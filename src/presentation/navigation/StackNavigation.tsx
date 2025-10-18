@@ -13,7 +13,7 @@ export const StackNavigation = () => {
     return (
         <Stack.Navigator screenOptions={{headerShown:false}}>
             <Stack.Screen name="Home" component={Home} />
-            <Stack.Screen name="Search" component={Search} />
+            <Stack.Screen name="Search" component={Search} options={{animation:'fade'}} />
         </Stack.Navigator>
     )
 }
