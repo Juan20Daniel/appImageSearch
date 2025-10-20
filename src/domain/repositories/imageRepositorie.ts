@@ -1,5 +1,5 @@
 import { Image } from "../entities/imageEntity";
 
 export interface ImageRepository {
-    getImages(): Promise<Image[]>;
+    getImages(page:number,offset?:number): Promise<Image[]>;
 }

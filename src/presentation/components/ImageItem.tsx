@@ -10,27 +10,19 @@ interface Props {
 export const ImageItem = ({image}:Props) => {
     return (
         <View style={styles.container}>
-            <View style={styles.card}>
-                <Image 
-                    style={styles.image}
-                    source={{uri:image.url}}
-                />
-            </View>
+            <Image 
+                style={styles.image}
+                source={{uri:`${image.url}`}}
+            />
         </View> 
     );
 }
 
 const styles = StyleSheet.create({
     container: {
-        width: getWidthPercentage(isTablet ? 45 : 90),
+        width: getWidthPercentage(isTablet ? 50 : 100),
         height: 400,
         padding: 10,
-    },
-    card: {
-        width: '100%',
-        height: '100%',
-        backgroundColor: '#ebebebff',
-        borderRadius: 30,
     },
     image: {
         width:'100%', 

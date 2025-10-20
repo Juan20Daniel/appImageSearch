@@ -14,7 +14,9 @@ export const HomeSubTitle = () => {
 const styles = StyleSheet.create({
     container: {
         alignItems: 'center',
-        marginTop: getHeightPercentage(5)
+        marginTop: getHeightPercentage(5),
+        marginBottom: getHeightPercentage(5),
+        width: getWidthPercentage(100),
     },
     title: {
         width: getWidthPercentage(80),

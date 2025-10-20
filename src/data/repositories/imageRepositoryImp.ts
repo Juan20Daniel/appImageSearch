@@ -6,9 +6,14 @@ import { handleError } from "../sources/remote/api/axios/error";
 import { axiosInstance } from "../sources/remote/api/axios/instance";
 
 export class ImageRepositoryImplement implements ImageRepository {
-    async getImages(): Promise<Image[]> {
+    async getImages(page=1, offset=20): Promise<Image[]> {
         try {
-            const {data} = await axiosInstance.get<ImageApiResponse[]>('/photos');
+            const {data} = await axiosInstance.get<ImageApiResponse[]>('/photos', {
+                params: {
+                    per_page: offset,
+                    page: page
+                }
+            });
             return data.map(imageItem => {
                 return ImageMapper.fromUnsplashAPIResponseToImageEntity(imageItem);
             });

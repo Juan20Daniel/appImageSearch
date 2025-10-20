@@ -31,7 +31,7 @@ export const Skeleton = ({
 
     const backgroundColor = anim.interpolate({
         inputRange: [0, 1],
-        outputRange: ["#E6E6E6", "#ddddddff"],
+        outputRange: ["#E6E6E6", "#cacacaff"],
     });
 
     return (
