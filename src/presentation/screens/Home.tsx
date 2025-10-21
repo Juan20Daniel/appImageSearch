@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { FlatList, NativeScrollEvent, NativeSyntheticEvent, StyleSheet, Text, View } from "react-native";
+import { FlatList, NativeScrollEvent, NativeSyntheticEvent, StyleSheet, View } from "react-native";
 import { Container } from "../components/Container";
 import { getImagesUseCase } from "../../domain/useCases/getImagesUseCase";
 import { BtnGoToSearchScreen } from "../components/BtnGoToSearchScreen";
@@ -7,8 +7,9 @@ import { HomeSubTitle } from "../components/HomeSubTitle";
 import { Image } from "../../domain/entities/imageEntity";
 import { HomeTitle } from "../components/HomeTitle";
 import { ImageItem } from "../components/ImageItem";
-import { isTablet } from "../helpers/isTablet";
 import { getWidthPercentage } from "../helpers/calcPercentage";
+import { ListImageSkeletor } from "../components/ListImageSkeletor";
+import { Alert } from "../components/Alert";
 
 interface CustomComponent {
     id:string;
@@ -23,7 +24,7 @@ export const Home = () => {
         [{id:'btn-search', name:'btn-search'}],
         [{id:'sub-title', name:'sub-title'}]
     ]);
-    const [ isLoading, setIsLoading ] = useState(true);
+    const [ alert, setAlert ] = useState({visible:false, title:'', message:''});
     const [ error, setError ] = useState(true);
     const isLoadingMore = useRef(false);
     const counter = useRef(0);
@@ -36,7 +37,6 @@ export const Home = () => {
     },[homeData]);
     const getImages = async () => {
         try {
-            setIsLoading(true);
             counter.current = counter.current+1;
             const response = await getImagesUseCase(counter.current);
             const result:Image[][] = formatData(response);
@@ -44,10 +44,12 @@ export const Home = () => {
             setError(false);
         } catch (error) {
             const errorMessage = (error as Error).message;
-            console.log(errorMessage);
+            setAlert({
+                visible:true, 
+                title:'Error al cargar las imagenes', 
+                message:errorMessage
+            });
             setError(true);
-        } finally {
-            setIsLoading(false);
         }
     }
     const formatData = (data:Image[]):Image[][] => {
@@ -72,35 +74,45 @@ export const Home = () => {
         getImages();
     }
     return (
-        <Container>
-            <FlatList 
-                data={homeData}
-                onScroll={onScroll}
-                style={styles.content}
-                keyExtractor={(_, index) => `${index}`}
-                showsVerticalScrollIndicator={false}
-                renderItem={({item}) => {
-                    console.log(item);
-                    if(item[0].id === 'app-name') return <HomeTitle />
-                    if(item[0].id === 'btn-search') return <BtnGoToSearchScreen />
-                    if(item[0].id === 'sub-title') return <HomeSubTitle />
-                    return (
-                        <View style={styles.row}>
-                            {item.map((data, index) => {
-                                const image = data as Image;
-                                return (
-                                    <ImageItem 
-                                        key={`${data.id} - ${index}`}
-                                        image={image}
-                                    />
-                                );
-                            })}
-                        </View>
-                    );
-                }}
-                stickyHeaderIndices={[1]}
+        <>
+            <Container>
+                <FlatList 
+                    data={homeData}
+                    onScroll={onScroll}
+                    style={styles.content}
+                    keyExtractor={(_, index) => `${index}`}
+                    showsVerticalScrollIndicator={false}
+                    ListFooterComponent={
+                        <ListImageSkeletor />
+                    }
+                    renderItem={({item}) => {
+                        if(item[0].id === 'app-name') return <HomeTitle />
+                        if(item[0].id === 'btn-search') return <BtnGoToSearchScreen />
+                        if(item[0].id === 'sub-title') return <HomeSubTitle />
+                        return (
+                            <View style={styles.row}>
+                                {item.map((data, index) => {
+                                    const image = data as Image;
+                                    return (
+                                        <ImageItem 
+                                            key={`${data.id} - ${index}`}
+                                            image={image}
+                                        />
+                                    );
+                                })}
+                            </View>
+                        );
+                    }}
+                    stickyHeaderIndices={[1]}
+                />
+            </Container>
+            <Alert 
+                visible={alert.visible}
+                title={alert.title} 
+                message={alert.message}
+                closeModal={() => setAlert({visible:false, title:'', message:''})} 
             />
-        </Container>
+        </>
     );
 }
 

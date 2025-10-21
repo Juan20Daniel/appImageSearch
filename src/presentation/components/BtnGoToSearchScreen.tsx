@@ -11,7 +11,8 @@ export const BtnGoToSearchScreen = () => {
     return (
         <View style={styles.container}>
             <Pressable 
-                onPress={() => navigation.navigate('Search')}
+                onPressIn={() => navigation.navigate('Search')}
+                collapsable={false}
                 style={({pressed}) => ([
                     styles.btnSearch,
                     {backgroundColor: pressed ? '#d8d8d8ff' : 'white' }
@@ -34,7 +35,7 @@ const styles = StyleSheet.create({
         height: getHeightPercentage(isTablet ? 7 : 9),
         backgroundColor: 'rgba(255, 255, 255, 0.75)',
         alignItems: 'center',
-        justifyContent: 'center'
+        justifyContent: 'center',   
     },
     btnSearch: {
         backgroundColor: 'white',
