@@ -1,87 +1,225 @@
-import React from 'react'
-import { KeyboardAvoidingView, Platform, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native'
+import React, { Dispatch, SetStateAction, useState } from 'react';
+import { Pressable, ScrollView, StyleSheet, Text, useWindowDimensions, View } from 'react-native';
 import { getWidthPercentage } from '../helpers/calcPercentage';
 import { isTablet } from '../helpers/isTablet';
+import { calcResolution } from '../helpers/calcResolutionDevice';
 
-const Header = () => {
-    return (
-        <View style={styles.header}>
+interface Props {
+    heightKeyboard: number;
+    heightInputSearch: number;
+}
+
+interface HeaderProps {
+     setHeightHeader: Dispatch<SetStateAction<number>>;
+}
+
+const Header = ({setHeightHeader}:HeaderProps) => {
+     return (
+          <View style={styles.header} onLayout={(e) => {
+            const { height } = e.nativeEvent.layout;
+            setHeightHeader(height);
+          }}>
             <Text style={styles.titleHeader}>Historial de busquedas</Text>
             <Pressable 
                 style={({pressed}) => [
                     styles.btnClearHistory, 
                     {backgroundColor: pressed ? '#ffffff' : '#f0f0f0bd',}
                 ]}>
-                <Text>
+                <Text style={styles.textBtnClearHistory}>
                     Limpiar historial
                 </Text>
             </Pressable>
         </View>
-    )
+    );
 }
 
-export const SearchHistory = () => {
-    return (
-        <View style={styles.container}>
-            <View style={styles.content}>
-                <Header />
-                <KeyboardAvoidingView
-                   
-                    style={{ flex: 1 }}
-                >
-                        
-                    <ScrollView>
-                        <Text>WWWWWWWWWW</Text>
-                        <Text>WWWWWWWWWW</Text>
-                        <Text>WWWWWWWWWW</Text>
-                        <Text>WWWWWWWWWW</Text>
-                        <Text>WWWWWWWWWW</Text>
-                        <Text>WWWWWWWWWW</Text>
-                        <Text>WWWWWWWWWW</Text>
-                        <Text>WWWWWWWWWW</Text>
-                        <Text>WWWWWWWWWW</Text>
-                        <Text>WWWWWWWWWW</Text>
-                        <Text>WWWWWWWWWW</Text>
-                        <Text>WWWWWWWWWW</Text>
-                        <Text>WWWWWWWWWW</Text>
-                        <Text>WWWWWWWWWW</Text>
-                        <Text>WWWWWWWWWW</Text>
-                        <Text>WWWWWWWWWW</Text>
-                        <Text>WWWWWWWWWW</Text>
-                        <Text>WWWWWWWWWW</Text>
-                        <Text>WWWWWWWWWW</Text>
-                        <Text>WWWWWWWWWW</Text>
-                        <Text>WWWWWWWWWW</Text>
-                        <Text>WWWWWWWWWW</Text>
-                        <Text>WWWWWWWWWW</Text>
-                        <Text>WWWWWWWWWW</Text>
-                        <Text>WWWWWWWWWW</Text>
-                        <Text>WWWWWWWWWW</Text>
-                        <Text>WWWWWWWWWW</Text>
-                        <Text>WWWWWWWWWW</Text>
-                        <Text>WWWWWWWWWW</Text>
-                        <Text>WWWWWWWWWW</Text>
-                        <Text>WWWWWWWWWW</Text>
-                        <Text>WWWWWWWWWW</Text>
-                        <Text>WWWWWWWWWW</Text>
-                        <Text>WWWWWWWWWW</Text>
-                        <Text>WWWWWWWWWW</Text>
-                        <Text>WWWWWWWWWW</Text>
-                        <Text>WWWWWWWWWW</Text>
-                        <Text>WWWWWWWWWW</Text>
-                        <Text>WWWWWWWWWW</Text>
-                        <Text>WWWWWWWWWW</Text>
-                        <Text>WWWWWWWWWW</Text>
-                        <Text>WWWWWWWWWW</Text>
-                        <Text>WWWWWWWWWW</Text>
-                        <Text>WWWWWWWWWW</Text>
-                        <Text>WWWWWWWWWW</Text>
-                        <Text>WWWWWWWWWW</Text>
+export const SearchHistory = ({heightKeyboard, heightInputSearch}:Props) => {
+     const [ heightHeader, setHeightHeader ] = useState(0);
+     const height = useWindowDimensions().height;
+     return (
+          <View style={{
+               ...styles.container, 
+               height: height-heightInputSearch-heightKeyboard
+          }}>
+               <View style={styles.content}>
+                    <Header setHeightHeader={setHeightHeader} />
+                    <ScrollView 
+                         showsVerticalScrollIndicator={false}
+                         style={{height: height-heightInputSearch-heightKeyboard-heightHeader-80}} 
+                         keyboardShouldPersistTaps="always"
+                    >
+                         <Pressable>
+                              <Text>WWWWWWWWWWWWWW</Text> 
+                         </Pressable>
+                         <Pressable>
+                              <Text>WWWWWWWWWWWWWW</Text> 
+                         </Pressable>
+                         <Pressable>
+                              <Text>WWWWWWWWWWWWWW</Text> 
+                         </Pressable>
+                         <Pressable>
+                              <Text>WWWWWWWWWWWWWW</Text> 
+                         </Pressable>
+                         <Pressable>
+                              <Text>WWWWWWWWWWWWWW</Text> 
+                         </Pressable>
+                         <Pressable>
+                              <Text>WWWWWWWWWWWWWW</Text> 
+                         </Pressable>
+                              <Pressable>
+                              <Text>WWWWWWWWWWWWWW</Text> 
+                         </Pressable>
+                         <Pressable>
+                              <Text>WWWWWWWWWWWWWW</Text> 
+                         </Pressable>
+                              <Pressable>
+                              <Text>WWWWWWWWWWWWWW</Text> 
+                         </Pressable>
+                         <Pressable>
+                              <Text>WWWWWWWWWWWWWW</Text> 
+                         </Pressable>
+                         <Pressable>
+                              <Text>WWWWWWWWWWWWWW</Text> 
+                         </Pressable>
+                         <Pressable>
+                              <Text>WWWWWWWWWWWWWW</Text> 
+                         </Pressable>
+                         <Pressable>
+                              <Text>WWWWWWWWWWWWWW</Text> 
+                         </Pressable>
+                         <Pressable>
+                              <Text>WWWWWWWWWWWWWW</Text> 
+                         </Pressable>
+                              <Pressable>
+                              <Text>WWWWWWWWWWWWWW</Text> 
+                         </Pressable>
+                         <Pressable>
+                              <Text>WWWWWWWWWWWWWW</Text> 
+                         </Pressable>
+                              <Pressable>
+                              <Text>WWWWWWWWWWWWWW</Text> 
+                         </Pressable>
+                         <Pressable>
+                              <Text>WWWWWWWWWWWWWW</Text> 
+                         </Pressable>
+                         <Pressable>
+                              <Text>WWWWWWWWWWWWWW</Text> 
+                         </Pressable>
+                         <Pressable>
+                              <Text>WWWWWWWWWWWWWW</Text> 
+                         </Pressable>
+                         <Pressable>
+                              <Text>WWWWWWWWWWWWWW</Text> 
+                         </Pressable>
+                         <Pressable>
+                              <Text>WWWWWWWWWWWWWW</Text> 
+                         </Pressable>
+                              <Pressable>
+                              <Text>WWWWWWWWWWWWWW</Text> 
+                         </Pressable>
+                         <Pressable>
+                              <Text>WWWWWWWWWWWWWW</Text> 
+                         </Pressable>
+                              <Pressable>
+                              <Text>WWWWWWWWWWWWWW</Text> 
+                         </Pressable>
+                         <Pressable>
+                              <Text>WWWWWWWWWWWWWW</Text> 
+                         </Pressable>
+                         <Pressable>
+                              <Text>WWWWWWWWWWWWWW</Text> 
+                         </Pressable>
+                         <Pressable>
+                              <Text>WWWWWWWWWWWWWW</Text> 
+                         </Pressable>
+                         <Pressable>
+                              <Text>WWWWWWWWWWWWWW</Text> 
+                         </Pressable>
+                         <Pressable>
+                              <Text>WWWWWWWWWWWWWW</Text> 
+                         </Pressable>
+                              <Pressable>
+                              <Text>WWWWWWWWWWWWWW</Text> 
+                         </Pressable>
+                         <Pressable>
+                              <Text>WWWWWWWWWWWWWW</Text> 
+                         </Pressable>
+                              <Pressable>
+                              <Text>WWWWWWWWWWWWWW</Text> 
+                         </Pressable>
+                         <Pressable>
+                              <Text>WWWWWWWWWWWWWW</Text> 
+                         </Pressable>
+                         <Pressable>
+                              <Text>WWWWWWWWWWWWWW</Text> 
+                         </Pressable>
+                         <Pressable>
+                              <Text>WWWWWWWWWWWWWW</Text> 
+                         </Pressable>
+                         <Pressable>
+                              <Text>WWWWWWWWWWWWWW</Text> 
+                         </Pressable>
+                         <Pressable>
+                              <Text>WWWWWWWWWWWWWW</Text> 
+                         </Pressable>
+                              <Pressable>
+                              <Text>WWWWWWWWWWWWWW</Text> 
+                         </Pressable>
+                         <Pressable>
+                              <Text>WWWWWWWWWWWWWW</Text> 
+                         </Pressable>
+                              <Pressable>
+                              <Text>WWWWWWWWWWWWWW</Text> 
+                         </Pressable>
+                         <Pressable>
+                              <Text>WWWWWWWWWWWWWW</Text> 
+                         </Pressable>
+                         <Pressable>
+                              <Text>WWWWWWWWWWWWWW</Text> 
+                         </Pressable>
+                         <Pressable>
+                              <Text>WWWWWWWWWWWWWW</Text> 
+                         </Pressable>
+                         <Pressable>
+                              <Text>WWWWWWWWWWWWWW</Text> 
+                         </Pressable>
+                         <Pressable>
+                              <Text>WWWWWWWWWWWWWW</Text> 
+                         </Pressable>
+                              <Pressable>
+                              <Text>WWWWWWWWWWWWWW</Text> 
+                         </Pressable>
+                         <Pressable>
+                              <Text>WWWWWWWWWWWWWW</Text> 
+                         </Pressable>
+                              <Pressable>
+                              <Text>WWWWWWWWWWWWWW</Text> 
+                         </Pressable>
+                         <Pressable>
+                              <Text>WWWWWWWWWWWWWW</Text> 
+                         </Pressable>
+                         <Pressable>
+                              <Text>WWWWWWWWWWWWWW</Text> 
+                         </Pressable>
+                         <Pressable>
+                              <Text>WWWWWWWWWWWWWW</Text> 
+                         </Pressable>
+                         <Pressable>
+                              <Text>WWWWWWWWWWWWWW</Text> 
+                         </Pressable>
+                         <Pressable>
+                              <Text>WWWWWWWWWWWWWW</Text> 
+                         </Pressable>
+                              <Pressable>
+                              <Text>WWWWWWWWWWWWWW</Text> 
+                         </Pressable>
+                         <Pressable>
+                              <Text>WWWWWWWWWWWWWW</Text> 
+                         </Pressable>
                     </ScrollView>
-                </KeyboardAvoidingView>
-            </View>
-        </View>
-    );
+               </View>
+          </View>
+     );
 }
 
 const styles = StyleSheet.create({
@@ -100,11 +238,14 @@ const styles = StyleSheet.create({
     },
     titleHeader: {
         fontFamily: 'Roboto-Bold',
-        fontSize: 20,
+        fontSize: Number(calcResolution({low: 10, medium: isTablet ? 20 : 16, high: 20})),
     },
     btnClearHistory: {
         paddingHorizontal: isTablet ? 30 : 20,
         paddingVertical: 8,
-        borderRadius: 10
+        borderRadius: 10,
+    },
+    textBtnClearHistory: {
+        fontSize: Number(calcResolution({low: 10, medium:isTablet ? 14 : 12}))
     }
 });

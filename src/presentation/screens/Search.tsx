@@ -1,20 +1,27 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { InputSearch } from "../components/InputSearch";
-import { Keyboard, TouchableWithoutFeedback, View } from "react-native";
+import { Keyboard, Pressable, Text, TextInput, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { SearchHistory } from "../components/SearchHistory";
+import { NavigationProp, useNavigation } from "@react-navigation/native";
+import { RootStackParamList } from "../navigation/StackNavigation";
 
 export const Search = () => {
     const [ isFocus, setIsFocus ] = useState(true);
-    const [ keyboard, setKeyboard ] = useState(true);
+    const [ heightKeyboard, setHeightKeyboard ] = useState(0);
+    const [ heightInputSearch, setHeightInputSearch ] = useState(0);
     const { top } = useSafeAreaInsets();
+    const navigation = useNavigation<NavigationProp<RootStackParamList>>();
+    const inputRef = useRef<TextInput>(null);
+
     useEffect(() => {
-        const showKeyboard = Keyboard.addListener('keyboardDidShow', () => {
-            setKeyboard(true);
+        const showKeyboard = Keyboard.addListener('keyboardDidShow', (event) => {
+            setHeightKeyboard(event.endCoordinates.height);
             setIsFocus(true);
         });
-        const hideKeyboard = Keyboard.addListener('keyboardDidHide', () => {
-            setKeyboard(false);
+        const hideKeyboard = Keyboard.addListener('keyboardDidHide', (event) => {
+            setHeightKeyboard(event.endCoordinates.height);
+            inputRef.current?.blur();
             setIsFocus(false);
         })
         return () => {
@@ -22,19 +29,23 @@ export const Search = () => {
             hideKeyboard.remove();
         }
     },[]);
-    const handleFocus = () => {
-        if(keyboard) return;
-        setIsFocus(false);
-    }
     return (
-        <TouchableWithoutFeedback onPress={() => handleFocus()}>
-            <View style={{marginTop: top, flex: 1, backgroundColor: '#ffffff'}}>
+        <View style={{marginTop: top, flex: 1, backgroundColor: '#ffffff'}}>
+            <View style={{flexDirection: 'row', justifyContent: 'space-between', paddingHorizontal: 10}}>
                 <InputSearch 
                     focus={isFocus}
+                    inputRef={inputRef}
                     onFocus={() => setIsFocus(true)}
+                    setHeightInputSearch={setHeightInputSearch}
                 />
-                <SearchHistory />
+                <Pressable onPress={() => navigation.navigate('Home')} style={{backgroundColor: 'red'}}>
+                    <Text>Bacl</Text>
+                </Pressable>
             </View>
-        </TouchableWithoutFeedback>
+            <SearchHistory 
+                heightKeyboard={heightKeyboard}
+                heightInputSearch={heightInputSearch}
+            />
+        </View>
     );
 }
