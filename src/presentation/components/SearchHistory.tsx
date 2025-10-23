@@ -3,6 +3,8 @@ import { Pressable, ScrollView, StyleSheet, Text, useWindowDimensions, View } fr
 import { getWidthPercentage } from '../helpers/calcPercentage';
 import { isTablet } from '../helpers/isTablet';
 import { calcResolution } from '../helpers/calcResolutionDevice';
+import Ionicons from '@react-native-vector-icons/ionicons';
+import { ItemHistory } from './ItemHistory';
 
 interface Props {
     heightKeyboard: number;
@@ -44,178 +46,55 @@ export const SearchHistory = ({heightKeyboard, heightInputSearch}:Props) => {
                <View style={styles.content}>
                     <Header setHeightHeader={setHeightHeader} />
                     <ScrollView 
-                         showsVerticalScrollIndicator={false}
-                         style={{height: height-heightInputSearch-heightKeyboard-heightHeader-80}} 
-                         keyboardShouldPersistTaps="always"
+                        showsVerticalScrollIndicator={false}
+                        style={{height: height-heightInputSearch-heightKeyboard-heightHeader-80}} 
+                        keyboardShouldPersistTaps="always"
                     >
-                         <Pressable>
-                              <Text>WWWWWWWWWWWWWW</Text> 
-                         </Pressable>
-                         <Pressable>
-                              <Text>WWWWWWWWWWWWWW</Text> 
-                         </Pressable>
-                         <Pressable>
-                              <Text>WWWWWWWWWWWWWW</Text> 
-                         </Pressable>
-                         <Pressable>
-                              <Text>WWWWWWWWWWWWWW</Text> 
-                         </Pressable>
-                         <Pressable>
-                              <Text>WWWWWWWWWWWWWW</Text> 
-                         </Pressable>
-                         <Pressable>
-                              <Text>WWWWWWWWWWWWWW</Text> 
-                         </Pressable>
-                              <Pressable>
-                              <Text>WWWWWWWWWWWWWW</Text> 
-                         </Pressable>
-                         <Pressable>
-                              <Text>WWWWWWWWWWWWWW</Text> 
-                         </Pressable>
-                              <Pressable>
-                              <Text>WWWWWWWWWWWWWW</Text> 
-                         </Pressable>
-                         <Pressable>
-                              <Text>WWWWWWWWWWWWWW</Text> 
-                         </Pressable>
-                         <Pressable>
-                              <Text>WWWWWWWWWWWWWW</Text> 
-                         </Pressable>
-                         <Pressable>
-                              <Text>WWWWWWWWWWWWWW</Text> 
-                         </Pressable>
-                         <Pressable>
-                              <Text>WWWWWWWWWWWWWW</Text> 
-                         </Pressable>
-                         <Pressable>
-                              <Text>WWWWWWWWWWWWWW</Text> 
-                         </Pressable>
-                              <Pressable>
-                              <Text>WWWWWWWWWWWWWW</Text> 
-                         </Pressable>
-                         <Pressable>
-                              <Text>WWWWWWWWWWWWWW</Text> 
-                         </Pressable>
-                              <Pressable>
-                              <Text>WWWWWWWWWWWWWW</Text> 
-                         </Pressable>
-                         <Pressable>
-                              <Text>WWWWWWWWWWWWWW</Text> 
-                         </Pressable>
-                         <Pressable>
-                              <Text>WWWWWWWWWWWWWW</Text> 
-                         </Pressable>
-                         <Pressable>
-                              <Text>WWWWWWWWWWWWWW</Text> 
-                         </Pressable>
-                         <Pressable>
-                              <Text>WWWWWWWWWWWWWW</Text> 
-                         </Pressable>
-                         <Pressable>
-                              <Text>WWWWWWWWWWWWWW</Text> 
-                         </Pressable>
-                              <Pressable>
-                              <Text>WWWWWWWWWWWWWW</Text> 
-                         </Pressable>
-                         <Pressable>
-                              <Text>WWWWWWWWWWWWWW</Text> 
-                         </Pressable>
-                              <Pressable>
-                              <Text>WWWWWWWWWWWWWW</Text> 
-                         </Pressable>
-                         <Pressable>
-                              <Text>WWWWWWWWWWWWWW</Text> 
-                         </Pressable>
-                         <Pressable>
-                              <Text>WWWWWWWWWWWWWW</Text> 
-                         </Pressable>
-                         <Pressable>
-                              <Text>WWWWWWWWWWWWWW</Text> 
-                         </Pressable>
-                         <Pressable>
-                              <Text>WWWWWWWWWWWWWW</Text> 
-                         </Pressable>
-                         <Pressable>
-                              <Text>WWWWWWWWWWWWWW</Text> 
-                         </Pressable>
-                              <Pressable>
-                              <Text>WWWWWWWWWWWWWW</Text> 
-                         </Pressable>
-                         <Pressable>
-                              <Text>WWWWWWWWWWWWWW</Text> 
-                         </Pressable>
-                              <Pressable>
-                              <Text>WWWWWWWWWWWWWW</Text> 
-                         </Pressable>
-                         <Pressable>
-                              <Text>WWWWWWWWWWWWWW</Text> 
-                         </Pressable>
-                         <Pressable>
-                              <Text>WWWWWWWWWWWWWW</Text> 
-                         </Pressable>
-                         <Pressable>
-                              <Text>WWWWWWWWWWWWWW</Text> 
-                         </Pressable>
-                         <Pressable>
-                              <Text>WWWWWWWWWWWWWW</Text> 
-                         </Pressable>
-                         <Pressable>
-                              <Text>WWWWWWWWWWWWWW</Text> 
-                         </Pressable>
-                              <Pressable>
-                              <Text>WWWWWWWWWWWWWW</Text> 
-                         </Pressable>
-                         <Pressable>
-                              <Text>WWWWWWWWWWWWWW</Text> 
-                         </Pressable>
-                              <Pressable>
-                              <Text>WWWWWWWWWWWWWW</Text> 
-                         </Pressable>
-                         <Pressable>
-                              <Text>WWWWWWWWWWWWWW</Text> 
-                         </Pressable>
-                         <Pressable>
-                              <Text>WWWWWWWWWWWWWW</Text> 
-                         </Pressable>
-                         <Pressable>
-                              <Text>WWWWWWWWWWWWWW</Text> 
-                         </Pressable>
-                         <Pressable>
-                              <Text>WWWWWWWWWWWWWW</Text> 
-                         </Pressable>
-                         <Pressable>
-                              <Text>WWWWWWWWWWWWWW</Text> 
-                         </Pressable>
-                              <Pressable>
-                              <Text>WWWWWWWWWWWWWW</Text> 
-                         </Pressable>
-                         <Pressable>
-                              <Text>WWWWWWWWWWWWWW</Text> 
-                         </Pressable>
-                              <Pressable>
-                              <Text>WWWWWWWWWWWWWW</Text> 
-                         </Pressable>
-                         <Pressable>
-                              <Text>WWWWWWWWWWWWWW</Text> 
-                         </Pressable>
-                         <Pressable>
-                              <Text>WWWWWWWWWWWWWW</Text> 
-                         </Pressable>
-                         <Pressable>
-                              <Text>WWWWWWWWWWWWWW</Text> 
-                         </Pressable>
-                         <Pressable>
-                              <Text>WWWWWWWWWWWWWW</Text> 
-                         </Pressable>
-                         <Pressable>
-                              <Text>WWWWWWWWWWWWWW</Text> 
-                         </Pressable>
-                              <Pressable>
-                              <Text>WWWWWWWWWWWWWW</Text> 
-                         </Pressable>
-                         <Pressable>
-                              <Text>WWWWWWWWWWWWWW</Text> 
-                         </Pressable>
+                        <ItemHistory />
+                        <ItemHistory />
+                        <ItemHistory />
+                        <ItemHistory />
+                         <ItemHistory />
+                        <ItemHistory />
+                        <ItemHistory />
+                        <ItemHistory />
+                         <ItemHistory />
+                        <ItemHistory />
+                        <ItemHistory />
+                        <ItemHistory />
+                         <ItemHistory />
+                        <ItemHistory />
+                        <ItemHistory />
+                        <ItemHistory />
+                         <ItemHistory />
+                        <ItemHistory />
+                        <ItemHistory />
+                        <ItemHistory />
+                         <ItemHistory />
+                        <ItemHistory />
+                        <ItemHistory />
+                        <ItemHistory />
+                         <ItemHistory />
+                        <ItemHistory />
+                        <ItemHistory />
+                        <ItemHistory />
+                         <ItemHistory />
+                        <ItemHistory />
+                        <ItemHistory />
+                        <ItemHistory />
+                         <ItemHistory />
+                        <ItemHistory />
+                        <ItemHistory />
+                        <ItemHistory />
+                         <ItemHistory />
+                        <ItemHistory />
+                        <ItemHistory />
+                        <ItemHistory />
+                         <ItemHistory />
+                        <ItemHistory />
+                        <ItemHistory />
+                        <ItemHistory />
+                        <View style={{width: 'auto', height: 100}} />
                     </ScrollView>
                </View>
           </View>

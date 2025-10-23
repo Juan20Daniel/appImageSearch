@@ -45,7 +45,7 @@ export const InputSearch = ({focus, inputRef, onFocus, setHeightInputSearch}:Pro
 const styles = StyleSheet.create({
     container: {
         position: 'relative',
-        width: getWidthPercentage(90),
+        width: getWidthPercentage(isTablet ? 90 : 80),
         height: getHeightPercentage(isTablet ? 6 : 8),
         justifyContent: 'center',
     },
@@ -57,10 +57,10 @@ const styles = StyleSheet.create({
     }, 
     fontInput: {
         position: 'relative',
-        backgroundColor: '#ffffff',
         width: '100%',
         height: '100%',
         borderWidth: 2,
+        backgroundColor: '#fff',
         borderRadius: 20,
     },
     input: {
@@ -68,11 +68,13 @@ const styles = StyleSheet.create({
         width: '100%',
         height: '100%',
         borderRadius: 20,
-        paddingLeft: isTablet ? 20 : 10,
+        paddingLeft: Number(calcResolution({low: 15, medium: isTablet ? 20 : 15})),
         paddingRight: 50,
-        fontSize: 15,
+        fontSize: Number(calcResolution({low: 10, medium: 15})),
+        paddingTop: isTablet ? 5 : 0,
         fontFamily:'Roboto-Light',
         zIndex: 2,
+        
     },
     boxIconSearch: {
         position: 'absolute',
