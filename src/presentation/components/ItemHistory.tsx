@@ -3,8 +3,17 @@ import Ionicons from '@react-native-vector-icons/ionicons';
 import { calcResolution } from '../helpers/calcResolutionDevice';
 
 export const ItemHistory = () => {
+    const handlePress = () => {
+        console.log('exce');
+    }
     return (
-        <Pressable style={styles.container}>
+        <Pressable 
+            onPress={() => handlePress()}
+            style={({pressed}) => [
+                styles.container,
+                {backgroundColor: pressed ? 'rgba(0,0,0,0.1)' : '#fff'}
+            ]}
+        >
             <View style={{flexDirection: 'row', gap: 10}}>
                 <Ionicons 
                     name='reload-outline'
@@ -15,7 +24,11 @@ export const ItemHistory = () => {
                     Autos de 1239
                 </Text> 
             </View>
-            <Pressable>
+            <Pressable 
+                style={({pressed}) => [
+                    {opacity: pressed ? 0.3 : 1}
+                ]}
+            >
                 <Ionicons 
                     name='close-outline' 
                     size={Number(calcResolution({low: 15, medium:20, high: 25}))} 
@@ -29,7 +42,7 @@ const styles = StyleSheet.create({
     container: {
         flexDirection: 'row', 
         justifyContent:'space-between', 
-        paddingHorizontal: 5, 
-        paddingVertical: 8
+        paddingHorizontal: 10, 
+        paddingVertical: 8,
     }
 });

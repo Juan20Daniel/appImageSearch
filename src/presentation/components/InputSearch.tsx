@@ -8,11 +8,13 @@ import Ionicons from '@react-native-vector-icons/ionicons';
 interface Props {
     focus: boolean;
     inputRef: React.RefObject<TextInput | null>;
+    value: string;
+    setValue: React.Dispatch<SetStateAction<string>>;
     onFocus: () => void;
     setHeightInputSearch: Dispatch<SetStateAction<number>>;
 }
 
-export const InputSearch = ({focus, inputRef, onFocus, setHeightInputSearch}:Props) => {
+export const InputSearch = ({focus, inputRef, value, setValue, onFocus, setHeightInputSearch}:Props) => {
     return (
         <View style={styles.container} onLayout={(e) => {
             const { height } = e.nativeEvent.layout;
@@ -24,6 +26,8 @@ export const InputSearch = ({focus, inputRef, onFocus, setHeightInputSearch}:Pro
                         ref={inputRef}
                         placeholder="Buscar imagenes" 
                         autoFocus
+                        value={value}
+                        onChangeText={setValue}
                         keyboardType="default"
                         autoComplete="off"
                         style={styles.input}
@@ -51,26 +55,28 @@ const styles = StyleSheet.create({
     },
     boxInputSearch: {
         width: '100%',
-        height: getHeightPercentage(isTablet ? 4 : 7),
+        height: 50,
         borderRadius: 20,
         padding: 3,
     }, 
     fontInput: {
         position: 'relative',
         width: '100%',
-        height: '100%',
+        height: 44,
         borderWidth: 2,
         backgroundColor: '#fff',
         borderRadius: 20,
+        justifyContent: 'center'
     },
     input: {
         position: 'absolute',
-        width: '100%',
-        height: '100%',
+        width: '100%',    
         borderRadius: 20,
         paddingLeft: Number(calcResolution({low: 15, medium: isTablet ? 20 : 15})),
         paddingRight: 50,
-        fontSize: Number(calcResolution({low: 10, medium: 15})),
+        height: 19,
+        paddingVertical: 0,
+        fontSize: Number(calcResolution({low: 10, medium: 14})),
         paddingTop: isTablet ? 5 : 0,
         fontFamily:'Roboto-Light',
         zIndex: 2,

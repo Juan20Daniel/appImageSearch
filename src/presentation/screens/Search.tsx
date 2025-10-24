@@ -1,18 +1,31 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useLayoutEffect, useRef, useState, useCallback } from "react";
 import { Keyboard, StyleSheet, TextInput, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { InputSearch } from "../components/InputSearch";
 import { SearchHistory } from "../components/SearchHistory";
 import { BtnGoBack } from "../components/BtnGoBack";
 import { BtnFloat } from "../components/BtnFloat";
+import { getHistoryLocalStorageUseCase, saveHistoryLocalStorageUseCase } from "../../domain/useCases/historyLocalStorageUseCase";
+import { History } from "../../domain/entities/historyEntity";
+import { NavigationProp, useFocusEffect, useNavigation } from "@react-navigation/native";
+import { RootStackParamList } from "../navigation/StackNavigation";
 
 export const Search = () => {
     const [ isFocus, setIsFocus ] = useState(true);
     const [ heightKeyboard, setHeightKeyboard ] = useState(0);
     const [ heightInputSearch, setHeightInputSearch ] = useState(0);
+    const [ history, setHistory ] = useState<History[]>([]);
+    const [ valueToSearch, setValueToSearch ] = useState('');
     const { top } = useSafeAreaInsets();
+    const navigation = useNavigation<NavigationProp<RootStackParamList>>();
     const inputRef = useRef<TextInput>(null);
-
+    useLayoutEffect(() => {
+        const getHistory = async () => {
+            const history = await getHistoryLocalStorageUseCase();
+            setHistory(history);
+        }
+        getHistory();
+    },[]);
     useEffect(() => {
         const showKeyboard = Keyboard.addListener('keyboardDidShow', (event) => {
             setHeightKeyboard(event.endCoordinates.height);
@@ -28,23 +41,42 @@ export const Search = () => {
             hideKeyboard.remove();
         }
     },[]);
+    useFocusEffect(
+        useCallback(() => {
+            console.log('exce')
+        },[])
+    )
+    const search = () => {
+        if(valueToSearch.length <= 3) return;
+        const newSearch:History = { value:valueToSearch }
+        saveHistoryLocalStorageUseCase([newSearch, ...history]);
+        setHistory([newSearch, ...history]);
+        setValueToSearch('');
+        navigation.navigate('SearchResults', {valueToSearch});
+    }
     return (
         <View style={{...styles.container, marginTop: top}}>
             <View style={styles.boxSearch}>
                 <InputSearch
                     focus={isFocus}
                     inputRef={inputRef}
+                    value={valueToSearch}
+                    setValue={setValueToSearch}
                     onFocus={() => setIsFocus(true)}
                     setHeightInputSearch={setHeightInputSearch}
                 />
                 <BtnGoBack />
             </View>
-            <SearchHistory
-                heightKeyboard={heightKeyboard}
-                heightInputSearch={heightInputSearch}
-            />
-            <BtnFloat 
-                bottom={50}
+            {history.length >=1 &&
+                <SearchHistory
+                    heightKeyboard={heightKeyboard}
+                    heightInputSearch={heightInputSearch}
+                    history={history}
+                />
+            }
+            <BtnFloat
+                action={() => search()}
+                bottom={heightKeyboard+70}
             />
         </View>
     );

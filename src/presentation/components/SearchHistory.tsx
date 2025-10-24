@@ -1,26 +1,29 @@
 import React, { Dispatch, SetStateAction, useState } from 'react';
 import { Pressable, ScrollView, StyleSheet, Text, useWindowDimensions, View } from 'react-native';
-import { getWidthPercentage } from '../helpers/calcPercentage';
 import { isTablet } from '../helpers/isTablet';
 import { calcResolution } from '../helpers/calcResolutionDevice';
-import Ionicons from '@react-native-vector-icons/ionicons';
 import { ItemHistory } from './ItemHistory';
+import { History } from '../../domain/entities/historyEntity';
 
 interface Props {
     heightKeyboard: number;
     heightInputSearch: number;
+    history: History[];
 }
 
 interface HeaderProps {
-     setHeightHeader: Dispatch<SetStateAction<number>>;
+    setHeightHeader: Dispatch<SetStateAction<number>>;
 }
 
 const Header = ({setHeightHeader}:HeaderProps) => {
-     return (
-          <View style={styles.header} onLayout={(e) => {
-            const { height } = e.nativeEvent.layout;
-            setHeightHeader(height);
-          }}>
+    return (
+        <View 
+            style={styles.header} 
+            onLayout={(e) => {
+                const { height } = e.nativeEvent.layout;
+                setHeightHeader(height);
+            }}
+        >
             <Text style={styles.titleHeader}>Historial de busquedas</Text>
             <Pressable 
                 style={({pressed}) => [
@@ -35,70 +38,29 @@ const Header = ({setHeightHeader}:HeaderProps) => {
     );
 }
 
-export const SearchHistory = ({heightKeyboard, heightInputSearch}:Props) => {
-     const [ heightHeader, setHeightHeader ] = useState(0);
-     const height = useWindowDimensions().height;
-     return (
-          <View style={{
-               ...styles.container, 
-               height: height-heightInputSearch-heightKeyboard
-          }}>
-               <View style={styles.content}>
-                    <Header setHeightHeader={setHeightHeader} />
-                    <ScrollView 
-                        showsVerticalScrollIndicator={false}
-                        style={{height: height-heightInputSearch-heightKeyboard-heightHeader-80}} 
-                        keyboardShouldPersistTaps="always"
-                    >
-                        <ItemHistory />
-                        <ItemHistory />
-                        <ItemHistory />
-                        <ItemHistory />
-                         <ItemHistory />
-                        <ItemHistory />
-                        <ItemHistory />
-                        <ItemHistory />
-                         <ItemHistory />
-                        <ItemHistory />
-                        <ItemHistory />
-                        <ItemHistory />
-                         <ItemHistory />
-                        <ItemHistory />
-                        <ItemHistory />
-                        <ItemHistory />
-                         <ItemHistory />
-                        <ItemHistory />
-                        <ItemHistory />
-                        <ItemHistory />
-                         <ItemHistory />
-                        <ItemHistory />
-                        <ItemHistory />
-                        <ItemHistory />
-                         <ItemHistory />
-                        <ItemHistory />
-                        <ItemHistory />
-                        <ItemHistory />
-                         <ItemHistory />
-                        <ItemHistory />
-                        <ItemHistory />
-                        <ItemHistory />
-                         <ItemHistory />
-                        <ItemHistory />
-                        <ItemHistory />
-                        <ItemHistory />
-                         <ItemHistory />
-                        <ItemHistory />
-                        <ItemHistory />
-                        <ItemHistory />
-                         <ItemHistory />
-                        <ItemHistory />
-                        <ItemHistory />
-                        <ItemHistory />
-                        <View style={{width: 'auto', height: 100}} />
-                    </ScrollView>
-               </View>
-          </View>
-     );
+export const SearchHistory = ({heightKeyboard, heightInputSearch, history}:Props) => {
+    const [ heightHeader, setHeightHeader ] = useState(0);
+    const height = useWindowDimensions().height;
+    return (
+        <View style={{
+            ...styles.container, 
+            height: height-heightInputSearch-heightKeyboard
+        }}>
+            <View style={styles.content}>
+                <Header setHeightHeader={setHeightHeader} />
+                <ScrollView 
+                    showsVerticalScrollIndicator={false}
+                    style={{height: height-heightInputSearch-heightKeyboard-heightHeader-80}} 
+                    keyboardShouldPersistTaps="always"
+                >
+                    {history.map((item, index) => (
+                        <ItemHistory key={index} />
+                    ))}
+                    <View style={{width: 'auto', height: 80}} />
+                </ScrollView>
+            </View>
+        </View>
+    );
 }
 
 const styles = StyleSheet.create({
@@ -107,13 +69,13 @@ const styles = StyleSheet.create({
         alignItems: 'center',
     },
     content: {
-        width: getWidthPercentage(95),
+        width: '100%',
     },
     header: {
         flexDirection: 'row',
         justifyContent: 'space-between',
         alignItems: 'center',
-        paddingHorizontal: 10,
+        paddingHorizontal: 15,
     },
     titleHeader: {
         fontFamily: 'Roboto-Bold',

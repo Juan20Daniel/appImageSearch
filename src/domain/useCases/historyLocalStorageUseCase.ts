@@ -10,7 +10,7 @@ const saveHistoryLocalStorageUseCase = (history:History[]):void => {
 const getHistoryLocalStorageUseCase = async (): Promise<History[]> => {
     try {
         const history = await HistoryLocalStorage.getLocalStorage();
-        console.log(history);
+        // console.log(history);
         return history;
     } catch (error) {
         throw new Error("Error al obtener los datos del LocalStorage");
