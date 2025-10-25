@@ -1,13 +1,20 @@
 import axios from "axios";
-const errorMessage = (code:string) => {
-    const errors:Record<string, string> = {
-        "ERR_NETWORK":"No hay conexión de internet, conecta el dispositivo a una red"
+
+class AppError extends Error {
+    errorCode: string;
+    originalError?: unknown;
+    constructor(errorCode: string, message: string, originalError?: unknown) {
+        super(message);
+        this.name = "AppError";
+        this.errorCode = errorCode;
+        this.originalError = originalError;
+        Object.setPrototypeOf(this, AppError.prototype);
     }
-    return errors[code]??"Error desconocido de petición HTTP";
 }
+
 export const handleError = (error: unknown) => {
     if(axios.isAxiosError(error)) {
-        throw new Error(errorMessage(error.code!));
+        throw new AppError('UNKNOWN_ERROR', 'ERROR DESCONOCIDO', error);
     }
-    throw new Error("Error desconocido de petición HTTP");
+    throw new AppError('UNKNOWN_ERROR', 'ERROR DESCONOCIDO', error);
 }

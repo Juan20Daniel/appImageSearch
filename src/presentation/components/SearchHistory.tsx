@@ -1,4 +1,4 @@
-import React, { Dispatch, SetStateAction, useState } from 'react';
+import { Dispatch, SetStateAction, useState } from 'react';
 import { Pressable, ScrollView, StyleSheet, Text, useWindowDimensions, View } from 'react-native';
 import { isTablet } from '../helpers/isTablet';
 import { calcResolution } from '../helpers/calcResolutionDevice';
@@ -50,13 +50,56 @@ export const SearchHistory = ({heightKeyboard, heightInputSearch, history}:Props
                 <Header setHeightHeader={setHeightHeader} />
                 <ScrollView 
                     showsVerticalScrollIndicator={false}
-                    style={{height: height-heightInputSearch-heightKeyboard-heightHeader-80}} 
+                    style={{height: height-heightInputSearch-heightKeyboard-heightHeader}} 
                     keyboardShouldPersistTaps="always"
                 >
                     {history.map((item, index) => (
-                        <ItemHistory key={index} />
+                        <ItemHistory key={index} history={item} />
                     ))}
-                    <View style={{width: 'auto', height: 80}} />
+                    <ItemHistory history={{value:''}} />
+                    <ItemHistory history={{value:''}} />
+                    <ItemHistory history={{value:''}} />
+                    <ItemHistory history={{value:''}} />
+                    <ItemHistory history={{value:''}} />
+                    <ItemHistory history={{value:''}} />
+                    <ItemHistory history={{value:''}} />
+                    <ItemHistory history={{value:''}} />
+                    <ItemHistory history={{value:''}} />
+                    <ItemHistory history={{value:''}} />
+                    <ItemHistory history={{value:''}} />
+                    <ItemHistory history={{value:''}} />
+                    <ItemHistory history={{value:''}} />
+                    <ItemHistory history={{value:''}} />
+                    <ItemHistory history={{value:''}} />
+                    <ItemHistory history={{value:''}} />
+                    <ItemHistory history={{value:''}} />
+                    <ItemHistory history={{value:''}} />
+                    <ItemHistory history={{value:''}} />
+                    <ItemHistory history={{value:''}} />
+                    <ItemHistory history={{value:''}} />
+                    <ItemHistory history={{value:''}} />
+                    <ItemHistory history={{value:''}} />
+                    <ItemHistory history={{value:''}} />
+                    <ItemHistory history={{value:''}} />
+                    <ItemHistory history={{value:''}} />
+                    <ItemHistory history={{value:''}} />
+                    <ItemHistory history={{value:''}} />
+                    <ItemHistory history={{value:''}} />
+                    <ItemHistory history={{value:''}} />
+                    <ItemHistory history={{value:''}} />
+                    <ItemHistory history={{value:''}} />
+                    <ItemHistory history={{value:''}} />
+                    <ItemHistory history={{value:''}} />
+                    <ItemHistory history={{value:''}} />
+                    <ItemHistory history={{value:''}} />
+                    <ItemHistory history={{value:''}} />
+                    <ItemHistory history={{value:''}} />
+                    <ItemHistory history={{value:''}} />
+                    <ItemHistory history={{value:''}} />
+                    <ItemHistory history={{value:''}} />
+                    <ItemHistory history={{value:''}} />
+                    <ItemHistory history={{value:''}} />
+                    <View style={{width: 'auto', height: 180}} />
                 </ScrollView>
             </View>
         </View>
@@ -75,6 +118,7 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'space-between',
         alignItems: 'center',
+        paddingBottom: 5,
         paddingHorizontal: 15,
     },
     titleHeader: {

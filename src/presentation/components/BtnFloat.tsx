@@ -11,12 +11,12 @@ interface Props {
 export const BtnFloat = ({bottom, action}:Props) => {
     return (
         <TouchableOpacity 
-            style={{...styles.container, bottom:bottom??'50%'}} 
+            style={{...styles.container, bottom:bottom??0}} 
             onPress={() => action()}
         >
             <Ionicons 
                 name='search-outline'
-                size={Number(calcResolution({low: 15, medium:isTablet ? 35 : 25}))}
+                size={Number(calcResolution({low: 20, medium:isTablet ? 35 : 25}))}
                 color="#fff"
             />
         </TouchableOpacity>
@@ -28,7 +28,7 @@ const styles = StyleSheet.create({
         position: 'absolute',
         right: 10,
         backgroundColor: '#1A66AC',
-        padding: Number(calcResolution({low: 5, medium: 9})),
+        padding: Number(calcResolution({low: 8, medium: 9})),
         borderRadius: 10,
         shadowColor: "#000000ff",
         shadowOffset: {

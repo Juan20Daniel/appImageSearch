@@ -1,5 +1,5 @@
-import { useEffect, useLayoutEffect, useRef, useState, useCallback } from "react";
-import { Keyboard, StyleSheet, TextInput, View } from "react-native";
+import { useEffect, useRef, useState, useCallback } from "react";
+import { Keyboard, StyleSheet, TextInput, useWindowDimensions, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { InputSearch } from "../components/InputSearch";
 import { SearchHistory } from "../components/SearchHistory";
@@ -18,14 +18,19 @@ export const Search = () => {
     const [ valueToSearch, setValueToSearch ] = useState('');
     const { top } = useSafeAreaInsets();
     const navigation = useNavigation<NavigationProp<RootStackParamList>>();
+    const height = useWindowDimensions().height;
     const inputRef = useRef<TextInput>(null);
-    useLayoutEffect(() => {
-        const getHistory = async () => {
-            const history = await getHistoryLocalStorageUseCase();
-            setHistory(history);
-        }
-        getHistory();
-    },[]);
+   
+    useFocusEffect(
+        useCallback(() => {
+            const getHistory = async () => {
+                const history = await getHistoryLocalStorageUseCase();
+                setHistory(history);
+                inputRef.current?.focus();
+            }
+            getHistory();
+        },[])
+    )
     useEffect(() => {
         const showKeyboard = Keyboard.addListener('keyboardDidShow', (event) => {
             setHeightKeyboard(event.endCoordinates.height);
@@ -41,21 +46,16 @@ export const Search = () => {
             hideKeyboard.remove();
         }
     },[]);
-    useFocusEffect(
-        useCallback(() => {
-            console.log('exce')
-        },[])
-    )
+   
     const search = () => {
         if(valueToSearch.length <= 3) return;
         const newSearch:History = { value:valueToSearch }
         saveHistoryLocalStorageUseCase([newSearch, ...history]);
-        setHistory([newSearch, ...history]);
         setValueToSearch('');
         navigation.navigate('SearchResults', {valueToSearch});
     }
     return (
-        <View style={{...styles.container, marginTop: top}}>
+        <View style={{...styles.container, marginTop: top, height: height-heightKeyboard}}>
             <View style={styles.boxSearch}>
                 <InputSearch
                     focus={isFocus}
@@ -76,7 +76,7 @@ export const Search = () => {
             }
             <BtnFloat
                 action={() => search()}
-                bottom={heightKeyboard+70}
+                bottom={100}
             />
         </View>
     );
@@ -85,7 +85,6 @@ export const Search = () => {
 const styles = StyleSheet.create({
     container: {
         position: 'relative',
-        flex: 1,
         backgroundColor: '#ffffff'
     },
     boxSearch: {

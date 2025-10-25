@@ -1,8 +1,13 @@
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 import Ionicons from '@react-native-vector-icons/ionicons';
 import { calcResolution } from '../helpers/calcResolutionDevice';
+import { History } from '../../domain/entities/historyEntity';
 
-export const ItemHistory = () => {
+interface Props {
+    history:History;
+}
+
+export const ItemHistory = ({history}:Props) => {
     const handlePress = () => {
         console.log('exce');
     }
@@ -21,7 +26,8 @@ export const ItemHistory = () => {
                     size={Number(calcResolution({low: 15, medium:20, high: 25}))} 
                 />
                 <Text style={{color: 'gray'}}>
-                    Autos de 1239
+                    {/* {history.value} */}
+                    WWWWWWW
                 </Text> 
             </View>
             <Pressable 

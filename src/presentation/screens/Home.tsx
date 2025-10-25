@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { FlatList, NativeScrollEvent, NativeSyntheticEvent, StyleSheet, View } from "react-native";
+import { FlatList, NativeScrollEvent, NativeSyntheticEvent, StyleSheet, View, RefreshControl, Text } from "react-native";
 import { Container } from "../components/Container";
 import { getImagesUseCase } from "../../domain/useCases/getImagesUseCase";
 import { BtnGoToSearchScreen } from "../components/BtnGoToSearchScreen";
@@ -26,6 +26,7 @@ export const Home = () => {
     ]);
     const [ alert, setAlert ] = useState({visible:false, title:'', message:''});
     const [ error, setError ] = useState(true);
+    const [ isRefreshing, setIsRefreshing ] = useState(false);
     const isLoadingMore = useRef(false);
     const counter = useRef(0);
 
@@ -43,13 +44,16 @@ export const Home = () => {
             setHomeData((preState) => ([...preState, ...result]));
             setError(false);
         } catch (error) {
+            console.log(error)
             const errorMessage = (error as Error).message;
             setAlert({
                 visible:true, 
                 title:'Error al cargar las imagenes', 
-                message:errorMessage
+                message:'ERR_NETWORK'
             });
             setError(true);
+        } finally {
+            setIsRefreshing(false);
         }
     }
     const formatData = (data:Image[]):Image[][] => {
@@ -73,15 +77,27 @@ export const Home = () => {
         isLoadingMore.current=true;
         getImages();
     }
+    const onRefresh = () => {
+        setIsRefreshing(true);
+        getImages();
+    }
     return (
         <>
             <Container>
                 <FlatList 
+                    refreshControl={
+                        <RefreshControl 
+                            refreshing={isRefreshing}
+                            progressViewOffset={100}
+                            onRefresh={onRefresh}
+                        />
+                    }
                     data={homeData}
                     onScroll={onScroll}
                     style={styles.content}
                     keyExtractor={(_, index) => `${index}`}
                     showsVerticalScrollIndicator={false}
+                   
                     ListFooterComponent={
                         <ListImageSkeletor />
                     }
