@@ -1,7 +1,7 @@
 import { Pressable, StyleSheet, Text, View } from 'react-native';
-import { calcResolution } from '../helpers/calcResolutionDevice';
-import Ionicons from '@react-native-vector-icons/ionicons';
 import { NavigationProp, useNavigation } from '@react-navigation/native';
+import Ionicons from '@react-native-vector-icons/ionicons';
+import { calcResolution } from '../helpers/calcResolutionDevice';
 import { RootStackParamList } from '../navigation/StackNavigation';
 import { getHeightPercentage, getWidthPercentage } from '../helpers/calcPercentage';
 import { isTablet } from '../helpers/isTablet';
@@ -11,7 +11,7 @@ export const BtnGoToSearchScreen = () => {
     return (
         <View style={styles.container}>
             <Pressable 
-                onPressIn={() => navigation.navigate('Search')}
+                onPressIn={() => navigation.navigate('Search', {})}
                 collapsable={false}
                 style={({pressed}) => ([
                     styles.btnSearch,

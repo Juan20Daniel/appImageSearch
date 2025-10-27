@@ -2,14 +2,18 @@ import { Pressable, StyleSheet, Text, View } from 'react-native';
 import Ionicons from '@react-native-vector-icons/ionicons';
 import { calcResolution } from '../helpers/calcResolutionDevice';
 import { History } from '../../domain/entities/historyEntity';
+import { NavigationProp, useNavigation } from '@react-navigation/native';
+import { RootStackParamList } from '../navigation/StackNavigation';
 
 interface Props {
     history:History;
+    removeItem:(itemToRemove:string) => void;
 }
 
-export const ItemHistory = ({history}:Props) => {
+export const ItemHistory = ({history, removeItem}:Props) => {
+    const navigation = useNavigation<NavigationProp<RootStackParamList, 'Search'>>();
     const handlePress = () => {
-        console.log('exce');
+        navigation.navigate('SearchResults', {valueToSearch:history.value});
     }
     return (
         <Pressable 
@@ -26,11 +30,11 @@ export const ItemHistory = ({history}:Props) => {
                     size={Number(calcResolution({low: 15, medium:20, high: 25}))} 
                 />
                 <Text style={{color: 'gray'}}>
-                    {/* {history.value} */}
-                    WWWWWWW
+                    {history.value}
                 </Text> 
             </View>
             <Pressable 
+                onPress={() => removeItem(history.value)}
                 style={({pressed}) => [
                     {opacity: pressed ? 0.3 : 1}
                 ]}

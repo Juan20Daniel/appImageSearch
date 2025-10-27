@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
-import { FlatList, NativeScrollEvent, NativeSyntheticEvent, StyleSheet, View, RefreshControl, Text } from "react-native";
+import { FlatList, NativeScrollEvent, NativeSyntheticEvent, StyleSheet, View, RefreshControl } from "react-native";
 import { Container } from "../components/Container";
-import { getImagesUseCase } from "../../domain/useCases/getImagesUseCase";
+import { getImagesUseCase } from "../../domain/useCases/imagesUseCase";
 import { BtnGoToSearchScreen } from "../components/BtnGoToSearchScreen";
 import { HomeSubTitle } from "../components/HomeSubTitle";
 import { Image } from "../../domain/entities/imageEntity";
@@ -10,6 +10,9 @@ import { ImageItem } from "../components/ImageItem";
 import { getWidthPercentage } from "../helpers/calcPercentage";
 import { ListImageSkeletor } from "../components/ListImageSkeletor";
 import { Alert } from "../components/Alert";
+import { handleError } from "../helpers/handleError";
+import { Error } from "../types/Error";
+import { ErrorNetwork } from "../components/ErrorNetwork";
 
 interface CustomComponent {
     id:string;
@@ -25,7 +28,7 @@ export const Home = () => {
         [{id:'sub-title', name:'sub-title'}]
     ]);
     const [ alert, setAlert ] = useState({visible:false, title:'', message:''});
-    const [ error, setError ] = useState(true);
+    const [ error, setError ] = useState<Error>({status:false, code:null});
     const [ isRefreshing, setIsRefreshing ] = useState(false);
     const isLoadingMore = useRef(false);
     const counter = useRef(0);
@@ -42,16 +45,15 @@ export const Home = () => {
             const response = await getImagesUseCase(counter.current);
             const result:Image[][] = formatData(response);
             setHomeData((preState) => ([...preState, ...result]));
-            setError(false);
+            setError({status:false, code:null});
         } catch (error) {
-            console.log(error)
-            const errorMessage = (error as Error).message;
+            const err = handleError(error);
             setAlert({
                 visible:true, 
                 title:'Error al cargar las imagenes', 
-                message:'ERR_NETWORK'
+                message:err.message
             });
-            setError(true);
+            setError({status:true, code:err.errorCode});
         } finally {
             setIsRefreshing(false);
         }
@@ -69,14 +71,7 @@ export const Home = () => {
         }
         return result;
     }
-    const onScroll = (event:NativeSyntheticEvent<NativeScrollEvent>) => {
-        if(isLoadingMore.current) return;
-        const {contentOffset, layoutMeasurement,contentSize } = event.nativeEvent;
-        const isEndReached = (contentOffset.y + layoutMeasurement.height + 300) >= contentSize.height;
-        if(!isEndReached) return;
-        isLoadingMore.current=true;
-        getImages();
-    }
+   
     const onRefresh = () => {
         setIsRefreshing(true);
         getImages();
@@ -93,18 +88,26 @@ export const Home = () => {
                         />
                     }
                     data={homeData}
-                    onScroll={onScroll}
+                    onEndReached={() => {
+                        if(isLoadingMore.current) return;
+                        getImages();
+                    }}
+                    onEndReachedThreshold={0.2}
                     style={styles.content}
                     keyExtractor={(_, index) => `${index}`}
                     showsVerticalScrollIndicator={false}
-                   
                     ListFooterComponent={
-                        <ListImageSkeletor />
+                        !error.status
+                            ?   <ListImageSkeletor />
+                            :   error.code === "ERR_NETWORK"
+                                    ?   <ErrorNetwork />
+                                    :   <ErrorNetwork />
                     }
                     renderItem={({item}) => {
                         if(item[0].id === 'app-name') return <HomeTitle />
                         if(item[0].id === 'btn-search') return <BtnGoToSearchScreen />
                         if(item[0].id === 'sub-title') return <HomeSubTitle />
+
                         return (
                             <View style={styles.row}>
                                 {item.map((data, index) => {

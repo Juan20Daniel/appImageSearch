@@ -3,11 +3,14 @@ import { Image, Pressable } from 'react-native';
 import { RootStackParamList } from '../navigation/StackNavigation';
 import { calcResolution } from '../helpers/calcResolutionDevice';
 
-export const BtnGoBack = () => {
-    const navigation = useNavigation<NavigationProp<RootStackParamList>>();
+interface Props {
+    action: () => void;
+}
+
+export const BtnGoBack = ({action}:Props) => {
     return (
         <Pressable 
-            onPress={() => navigation.navigate('Home')} 
+            onPress={() => action()} 
             style={({pressed}) => [{
                 justifyContent: 'center',
                 opacity: pressed ? 0.5 : 1

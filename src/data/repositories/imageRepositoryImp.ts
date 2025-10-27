@@ -1,8 +1,7 @@
 import { Image } from "../../domain/entities/imageEntity";
 import { ImageRepository } from "../../domain/repositories/imageRepositorie";
 import { ImageMapper } from "../models/imageMapper";
-import { ImageApiResponse } from "../models/unsplashApiResponse";
-import { handleError } from "../sources/remote/api/axios/error";
+import { ImageApiResponse, UnsplashAPIResponse } from "../models/unsplashApiResponse";
 import { axiosInstance } from "../sources/remote/api/axios/instance";
 
 export class ImageRepositoryImplement implements ImageRepository {
@@ -18,7 +17,24 @@ export class ImageRepositoryImplement implements ImageRepository {
                 return ImageMapper.fromUnsplashAPIResponseToImageEntity(imageItem);
             });
         } catch (error) {
-            return handleError(error);
+            throw error;
+        }
+    }
+    async searchImages(query: string, page=1, offset=20): Promise<Image[]> {
+        try {
+            const { data } = await axiosInstance.get<UnsplashAPIResponse>('/search/photos', {
+                params: {
+                    per_page: offset,
+                    page: page,
+                    query: query
+                }
+            });
+
+            return data.results.map(imageItem => {
+                return ImageMapper.fromUnsplashAPIResponseToImageEntity(imageItem);
+            });
+        } catch (error) {
+            throw error;
         }
     }
 }

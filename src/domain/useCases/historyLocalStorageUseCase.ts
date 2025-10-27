@@ -10,11 +10,9 @@ const saveHistoryLocalStorageUseCase = (history:History[]):void => {
 const getHistoryLocalStorageUseCase = async (): Promise<History[]> => {
     try {
         const history = await HistoryLocalStorage.getLocalStorage();
-        // console.log(history);
         return history;
     } catch (error) {
-        throw new Error("Error al obtener los datos del LocalStorage");
-        
+        throw new Error("Error al obtener los datos del LocalStorage.");
     }
 }
 
@@ -22,8 +20,17 @@ const clearHistoryLocalStorageUseCase = () => {
     HistoryLocalStorage.clearHistoryLocalStorage();
 }
 
+const removeItemHistoryLocalStorageUseCase = async (item:string):Promise<History[]> => {
+    try {
+        return await HistoryLocalStorage.removeItemLocalStorage(item);
+    } catch (error) {
+        throw new Error("Error al eliminar el item del historial.");
+    }
+}
+
 export {
     saveHistoryLocalStorageUseCase,
     getHistoryLocalStorageUseCase,
-    clearHistoryLocalStorageUseCase
+    clearHistoryLocalStorageUseCase,
+    removeItemHistoryLocalStorageUseCase
 }

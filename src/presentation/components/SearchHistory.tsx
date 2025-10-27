@@ -9,13 +9,16 @@ interface Props {
     heightKeyboard: number;
     heightInputSearch: number;
     history: History[];
+    clearHistory:() => void;
+    removeItem:(itemToRemove:string) => void;
 }
 
 interface HeaderProps {
     setHeightHeader: Dispatch<SetStateAction<number>>;
+    clearHistory:() => void;
 }
 
-const Header = ({setHeightHeader}:HeaderProps) => {
+const Header = ({setHeightHeader, clearHistory}:HeaderProps) => {
     return (
         <View 
             style={styles.header} 
@@ -26,6 +29,7 @@ const Header = ({setHeightHeader}:HeaderProps) => {
         >
             <Text style={styles.titleHeader}>Historial de busquedas</Text>
             <Pressable 
+                onPress={() => clearHistory()}
                 style={({pressed}) => [
                     styles.btnClearHistory, 
                     {backgroundColor: pressed ? '#ffffff' : '#f0f0f0bd',}
@@ -38,7 +42,7 @@ const Header = ({setHeightHeader}:HeaderProps) => {
     );
 }
 
-export const SearchHistory = ({heightKeyboard, heightInputSearch, history}:Props) => {
+export const SearchHistory = ({heightKeyboard, heightInputSearch, history, clearHistory, removeItem}:Props) => {
     const [ heightHeader, setHeightHeader ] = useState(0);
     const height = useWindowDimensions().height;
     return (
@@ -47,58 +51,22 @@ export const SearchHistory = ({heightKeyboard, heightInputSearch, history}:Props
             height: height-heightInputSearch-heightKeyboard
         }}>
             <View style={styles.content}>
-                <Header setHeightHeader={setHeightHeader} />
+                <Header 
+                    setHeightHeader={setHeightHeader} 
+                    clearHistory={clearHistory}
+                />
                 <ScrollView 
                     showsVerticalScrollIndicator={false}
                     style={{height: height-heightInputSearch-heightKeyboard-heightHeader}} 
                     keyboardShouldPersistTaps="always"
                 >
                     {history.map((item, index) => (
-                        <ItemHistory key={index} history={item} />
+                        <ItemHistory 
+                            key={index} 
+                            history={item} 
+                            removeItem={removeItem}
+                        />
                     ))}
-                    <ItemHistory history={{value:''}} />
-                    <ItemHistory history={{value:''}} />
-                    <ItemHistory history={{value:''}} />
-                    <ItemHistory history={{value:''}} />
-                    <ItemHistory history={{value:''}} />
-                    <ItemHistory history={{value:''}} />
-                    <ItemHistory history={{value:''}} />
-                    <ItemHistory history={{value:''}} />
-                    <ItemHistory history={{value:''}} />
-                    <ItemHistory history={{value:''}} />
-                    <ItemHistory history={{value:''}} />
-                    <ItemHistory history={{value:''}} />
-                    <ItemHistory history={{value:''}} />
-                    <ItemHistory history={{value:''}} />
-                    <ItemHistory history={{value:''}} />
-                    <ItemHistory history={{value:''}} />
-                    <ItemHistory history={{value:''}} />
-                    <ItemHistory history={{value:''}} />
-                    <ItemHistory history={{value:''}} />
-                    <ItemHistory history={{value:''}} />
-                    <ItemHistory history={{value:''}} />
-                    <ItemHistory history={{value:''}} />
-                    <ItemHistory history={{value:''}} />
-                    <ItemHistory history={{value:''}} />
-                    <ItemHistory history={{value:''}} />
-                    <ItemHistory history={{value:''}} />
-                    <ItemHistory history={{value:''}} />
-                    <ItemHistory history={{value:''}} />
-                    <ItemHistory history={{value:''}} />
-                    <ItemHistory history={{value:''}} />
-                    <ItemHistory history={{value:''}} />
-                    <ItemHistory history={{value:''}} />
-                    <ItemHistory history={{value:''}} />
-                    <ItemHistory history={{value:''}} />
-                    <ItemHistory history={{value:''}} />
-                    <ItemHistory history={{value:''}} />
-                    <ItemHistory history={{value:''}} />
-                    <ItemHistory history={{value:''}} />
-                    <ItemHistory history={{value:''}} />
-                    <ItemHistory history={{value:''}} />
-                    <ItemHistory history={{value:''}} />
-                    <ItemHistory history={{value:''}} />
-                    <ItemHistory history={{value:''}} />
                     <View style={{width: 'auto', height: 180}} />
                 </ScrollView>
             </View>

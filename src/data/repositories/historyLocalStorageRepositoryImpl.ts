@@ -4,6 +4,10 @@ import { LocalStorage } from "../sources/local/localStorage";
 
 export class HostoryLocalStorageRepositoryImpl implements historyLocalRespository {
     saveLocalStorage(history: History[]): void {
+
+        if(history.length > 20) {
+            history = history.slice(0, 21);
+        }
         LocalStorage().save(history);
     }
     async getLocalStorage(): Promise<History[]> {
@@ -16,7 +20,11 @@ export class HostoryLocalStorageRepositoryImpl implements historyLocalRespositor
     clearHistoryLocalStorage(): void {
         LocalStorage().clear();
     }
-    removeItemLocalStorage(): void {
-        
+    async removeItemLocalStorage(item:string): Promise<History[]> {
+        try {
+            return await LocalStorage().removeItem(item);
+        } catch (error) {
+            throw error;
+        }
     }
 }

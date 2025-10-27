@@ -28,15 +28,18 @@ export const LocalStorage = () => {
             await AsyncStorage.removeItem(nameLocalStorage);
         } catch (error) {
             console.log(error);
-            throw error
+            throw error;
         }
     }
-    const removeItem = async () => {
+    const removeItem = async (itemToRemove:string) => {
         try {
-            console.log('remove item')    
+            const history = await get();
+            const newHistory = history.filter(item => item.value != itemToRemove);
+            save(newHistory);
+            return newHistory;
         } catch (error) {
             console.log(error);
-            throw error
+            throw error;
         }
     }
 

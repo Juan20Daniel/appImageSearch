@@ -5,10 +5,15 @@ import { InputSearch } from "../components/InputSearch";
 import { SearchHistory } from "../components/SearchHistory";
 import { BtnGoBack } from "../components/BtnGoBack";
 import { BtnFloat } from "../components/BtnFloat";
-import { getHistoryLocalStorageUseCase, saveHistoryLocalStorageUseCase } from "../../domain/useCases/historyLocalStorageUseCase";
 import { History } from "../../domain/entities/historyEntity";
 import { NavigationProp, useFocusEffect, useNavigation } from "@react-navigation/native";
 import { RootStackParamList } from "../navigation/StackNavigation";
+import { 
+    clearHistoryLocalStorageUseCase, 
+    getHistoryLocalStorageUseCase, 
+    removeItemHistoryLocalStorageUseCase, 
+    saveHistoryLocalStorageUseCase 
+} from "../../domain/useCases/historyLocalStorageUseCase";
 
 export const Search = () => {
     const [ isFocus, setIsFocus ] = useState(true);
@@ -26,9 +31,14 @@ export const Search = () => {
             const getHistory = async () => {
                 const history = await getHistoryLocalStorageUseCase();
                 setHistory(history);
-                inputRef.current?.focus();
             }
             getHistory();
+            const timerout = setTimeout(() => {
+                inputRef.current?.focus();
+            },300);
+            return () => { 
+                clearTimeout(timerout);
+            }
         },[])
     )
     useEffect(() => {
@@ -46,13 +56,20 @@ export const Search = () => {
             hideKeyboard.remove();
         }
     },[]);
-   
     const search = () => {
         if(valueToSearch.length <= 3) return;
         const newSearch:History = { value:valueToSearch }
         saveHistoryLocalStorageUseCase([newSearch, ...history]);
         setValueToSearch('');
         navigation.navigate('SearchResults', {valueToSearch});
+    }
+    const clearHistory = () => {
+        clearHistoryLocalStorageUseCase();
+        setHistory([]);
+    }
+    const removeItem = async (item:string) => {
+        const newHostory = await removeItemHistoryLocalStorageUseCase(item);
+        setHistory(newHostory);
     }
     return (
         <View style={{...styles.container, marginTop: top, height: height-heightKeyboard}}>
@@ -65,13 +82,15 @@ export const Search = () => {
                     onFocus={() => setIsFocus(true)}
                     setHeightInputSearch={setHeightInputSearch}
                 />
-                <BtnGoBack />
+                <BtnGoBack action={() => navigation.navigate('Home')} />
             </View>
             {history.length >=1 &&
                 <SearchHistory
                     heightKeyboard={heightKeyboard}
                     heightInputSearch={heightInputSearch}
                     history={history}
+                    clearHistory={() => clearHistory()}
+                    removeItem={(itemToRemove) => removeItem(itemToRemove)}
                 />
             }
             <BtnFloat
