@@ -2,11 +2,13 @@ import axios from "axios";
 
 export enum ErrorCodes {
     ERR_NETWORK = "ERR_NETWORK",
-    UNKNOWN_ERROR = "UNKNOWN_ERROR"
+    ERR_BAD_REQUEST = "ERR_BAD_REQUEST",
+    UNKNOWN_ERROR = "UNKNOWN_ERROR",
 }
 
 const errors: Record<ErrorCodes, string> = {
     [ErrorCodes.ERR_NETWORK]: "No hay conexión de internet, conecta el dispositivo a una red",
+    [ErrorCodes.ERR_BAD_REQUEST]: "Hubo un problema al obtener las imagenes, intentalo mas tarde.",
     [ErrorCodes.UNKNOWN_ERROR]: "Error desconocido de petición HTTP"
 }
 

@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { FlatList, NativeScrollEvent, NativeSyntheticEvent, StyleSheet, View, RefreshControl } from "react-native";
+import { FlatList, StyleSheet, View, RefreshControl } from "react-native";
 import { Container } from "../components/Container";
 import { getImagesUseCase } from "../../domain/useCases/imagesUseCase";
 import { BtnGoToSearchScreen } from "../components/BtnGoToSearchScreen";
@@ -12,7 +12,8 @@ import { ListImageSkeletor } from "../components/ListImageSkeletor";
 import { Alert } from "../components/Alert";
 import { handleError } from "../helpers/handleError";
 import { Error } from "../types/Error";
-import { ErrorNetwork } from "../components/ErrorNetwork";
+import { ErrorIlustration } from "../components/ErrorIlustration";
+import { Empty } from "../components/Empty";
 
 interface CustomComponent {
     id:string;
@@ -29,18 +30,17 @@ export const Home = () => {
     ]);
     const [ alert, setAlert ] = useState({visible:false, title:'', message:''});
     const [ error, setError ] = useState<Error>({status:false, code:null});
+    const [ isLoading, setIsLoading ] = useState(true);
     const [ isRefreshing, setIsRefreshing ] = useState(false);
-    const isLoadingMore = useRef(false);
     const counter = useRef(0);
 
     useEffect(() => {
         getImages();
     }, []);
-    useEffect(() => {
-        isLoadingMore.current = false;
-    },[homeData]);
+
     const getImages = async () => {
         try {
+            setIsLoading(true);
             counter.current = counter.current+1;
             const response = await getImagesUseCase(counter.current);
             const result:Image[][] = formatData(response);
@@ -56,9 +56,11 @@ export const Home = () => {
             setError({status:true, code:err.errorCode});
         } finally {
             setIsRefreshing(false);
+            setIsLoading(false);
         }
     }
     const formatData = (data:Image[]):Image[][] => {
+        if(!data.length) return [];
         const itemsByGroup = 2;
         const result:Image[][] = [];
         for(let i=0; i<=data.length-1; i++) {
@@ -71,15 +73,25 @@ export const Home = () => {
         }
         return result;
     }
-   
     const onRefresh = () => {
+        setHomeData([
+            [{id:'app-name', name:'app-name'}],
+            [{id:'btn-search', name:'btn-search'}],
+            [{id:'sub-title', name:'sub-title'}]
+        ]);
         setIsRefreshing(true);
+        counter.current = 0;
         getImages();
     }
     return (
         <>
             <Container>
                 <FlatList 
+                    data={homeData}
+                    onEndReached={() => {
+                        if(homeData.length < 4 || isLoading || error.status) return;
+                        getImages();
+                    }}
                     refreshControl={
                         <RefreshControl 
                             refreshing={isRefreshing}
@@ -87,27 +99,23 @@ export const Home = () => {
                             onRefresh={onRefresh}
                         />
                     }
-                    data={homeData}
-                    onEndReached={() => {
-                        if(isLoadingMore.current) return;
-                        getImages();
-                    }}
                     onEndReachedThreshold={0.2}
                     style={styles.content}
                     keyExtractor={(_, index) => `${index}`}
-                    showsVerticalScrollIndicator={false}
+                    showsVerticalScrollIndicator={false}      
                     ListFooterComponent={
-                        !error.status
+                        isLoading 
                             ?   <ListImageSkeletor />
-                            :   error.code === "ERR_NETWORK"
-                                    ?   <ErrorNetwork />
-                                    :   <ErrorNetwork />
+                            :   error.status
+                                    ?   <ErrorIlustration errorCode={error.code!}  />
+                                    :   (homeData.length <= 3)
+                                            ?   <Empty />
+                                            :   <View />
                     }
                     renderItem={({item}) => {
                         if(item[0].id === 'app-name') return <HomeTitle />
                         if(item[0].id === 'btn-search') return <BtnGoToSearchScreen />
                         if(item[0].id === 'sub-title') return <HomeSubTitle />
-
                         return (
                             <View style={styles.row}>
                                 {item.map((data, index) => {

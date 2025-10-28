@@ -1,4 +1,4 @@
-import { FlatList, StyleSheet, Text, View } from 'react-native';
+import { FlatList, RefreshControl, StyleSheet, Text, View } from 'react-native';
 import { StackScreenProps } from '@react-navigation/stack';
 import { RootStackParamList } from '../navigation/StackNavigation';
 import { useLayoutEffect, useRef, useState } from 'react';
@@ -12,9 +12,11 @@ import { BtnGoBack } from '../components/BtnGoBack';
 import { calcResolution } from '../helpers/calcResolutionDevice';
 import { ImageItem } from '../components/ImageItem';
 import { ListImageSkeletor } from '../components/ListImageSkeletor';
-import { NotImages } from '../components/NotImages';
+import { ImagesNotFound } from '../components/ImagesNotFound';
 import { ErrorNetwork } from '../components/ErrorNetwork';
 import { handleError } from '../helpers/handleError';
+import { Alert } from '../components/Alert';
+import { ErrorIlustration } from '../components/ErrorIlustration';
 
 interface Props extends StackScreenProps<RootStackParamList, 'SearchResults'>{}
 
@@ -22,69 +24,94 @@ export const SearchResults = ({route, navigation}:Props) => {
     const [ images, setImages ] = useState<Image[]>([]);
     const [ isLoading, setIsLoading ] = useState(true);
     const [ error, setError ] = useState<Error>({ status:false, code:null });
+    const [ isRefreshing, setIsRefreshing ] = useState(false);
+    const [ alert, setAlert ] = useState({visible:false, title:'', message:''});
     const { valueToSearch } = route.params;
     const counter = useRef<number>(0);
     useLayoutEffect(() => {
         searchImages();
     },[valueToSearch]);
     const searchImages = async () => {
-        if(error.status) return;
         try {
-            setIsLoading(true);
             counter.current = counter.current+1;
             const images = await searchImageUseCase(valueToSearch, counter.current);
             setImages(preState => ([...preState, ...images]));
-            console.log(images);
             setError({status:false, code:null});
         } catch (error) {
             const err = handleError(error);
-            console.log(err);
+            counter.current = counter.current-1;
+            setAlert({
+                visible:true, 
+                title:'Error al cargar las imagenes', 
+                message:err.message
+            });
             setError({status:true, code:null});
         } finally {
             setIsLoading(false);
+            setIsRefreshing(false);
         }
     }
+    const onRefresh = () => {
+        setIsRefreshing(true);
+        counter.current = 0;
+        searchImages();
+    }
     return (
-        <Container>
-            <View style={styles.navbar}>
-                <View style={styles.boxTitle}>
-                    <Text style={styles.title}>Resultados de la busqueda</Text>
-                </View>
-                <BtnGoBack action={() => navigation.goBack()} />
-            </View>
-            <FlatList 
-                data={images}
-                keyExtractor={(_, index) => index.toString()}
-                numColumns={ isTablet ? 2 : 1}
-                ListHeaderComponent={
-                    <View style={styles.boxValueToSearch}>
-                        <Text style={styles.valueToSearch}>{valueToSearch}</Text>
+        <>
+            <Container>
+                <View style={styles.navbar}>
+                    <View style={styles.boxTitle}>
+                        <Text style={styles.title}>Resultados de la busqueda</Text>
                     </View>
-                }
-                ListEmptyComponent={
-                    (images.length === 0 && !isLoading)
-                        ?   <NotImages />
-                        :   <View />
-                }
-                ListFooterComponent={
-                    isLoading
-                        ?   <ListImageSkeletor /> 
-                        :   !error.status
-                                ?   <View />
-                                :   error.code === "ERR_NETWORK"
-                                        ?   <ErrorNetwork />
-                                        :   <ErrorNetwork />
-                }
-                renderItem={({item}) => (
-                    <ImageItem image={item} />            
-                )}
-                onEndReached={() => {
-                    if(isLoading) return;
-                    searchImages();
-                }}
-                onEndReachedThreshold={0.2}
+                    <BtnGoBack action={() => navigation.goBack()} />
+                </View>
+                <FlatList 
+                    data={images}
+                    keyExtractor={(_, index) => index.toString()}
+                    numColumns={ isTablet ? 2 : 1}
+                    showsVerticalScrollIndicator={false}
+                    refreshControl={
+                        <RefreshControl 
+                            refreshing={isRefreshing}
+                            progressViewOffset={100}
+                            onRefresh={onRefresh}
+                        />
+                    }
+                    ListHeaderComponent={
+                        <View style={styles.boxValueToSearch}>
+                            <Text style={styles.valueToSearch}>{valueToSearch}</Text>
+                        </View>
+                    }
+                    ListEmptyComponent={
+                        (images.length === 0 && !isLoading && !error.status) 
+                            ?   <ImagesNotFound />
+                            :   <View />
+                    }
+                    ListFooterComponent={
+                        isLoading
+                            ?   <ListImageSkeletor /> 
+                            :   !error.status
+                                    ?   <View />
+                                    :   <ErrorIlustration errorCode={error.code!}  />
+                    }
+                    renderItem={({item}) => (
+                        <ImageItem image={item} />            
+                    )}
+                    onEndReached={() => {
+                        if(isLoading) return;
+                        if(error.status) return;
+                        searchImages();
+                    }}
+                    onEndReachedThreshold={0.2}
+                />
+            </Container>
+            <Alert
+                visible={alert.visible}
+                title={alert.title} 
+                message={alert.message}
+                closeModal={() => setAlert({visible:false, title:'', message:''})} 
             />
-        </Container>
+        </>
     );
 }
 

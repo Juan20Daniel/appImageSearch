@@ -38,6 +38,38 @@ export const ListImageSkeletor = () => {
                     />
                 </View>
             </View>
+              <View style={styles.row}>
+                <View style={{width:getWidthPercentage(isTablet ? 50 : 100), padding: 10}}>
+                    <Skeleton 
+                        width='100%'
+                        height={400} 
+                        borderRadius={30}
+                    />
+                </View>
+                <View style={{width:getWidthPercentage(isTablet ? 50 : 100), padding: 10}}>
+                    <Skeleton 
+                        width='100%'
+                        height={400} 
+                        borderRadius={30}
+                    />
+                </View>
+            </View>
+              <View style={styles.row}>
+                <View style={{width:getWidthPercentage(isTablet ? 50 : 100), padding: 10}}>
+                    <Skeleton 
+                        width='100%'
+                        height={400} 
+                        borderRadius={30}
+                    />
+                </View>
+                <View style={{width:getWidthPercentage(isTablet ? 50 : 100), padding: 10}}>
+                    <Skeleton 
+                        width='100%'
+                        height={400} 
+                        borderRadius={30}
+                    />
+                </View>
+            </View>
         </View>
     )
 }
