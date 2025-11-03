@@ -14,7 +14,8 @@ import { handleError } from "../helpers/handleError";
 import { Error } from "../types/Error";
 import { ErrorIlustration } from "../components/ErrorIlustration";
 import { Empty } from "../components/Empty";
-
+import { UNSPLASH_BASE_APIS, UNSPLASH_CLIENT_ID } from "@env";
+console.log(UNSPLASH_CLIENT_ID);
 interface CustomComponent {
     id:string;
     name: string;
