@@ -14,6 +14,7 @@ import { handleError } from "../helpers/handleError";
 import { Error } from "../types/Error";
 import { ErrorIlustration } from "../components/ErrorIlustration";
 import { Empty } from "../components/Empty";
+import { ShowFullImage } from "../components/ShowFullImage";
 
 interface CustomComponent {
     id:string;
@@ -32,6 +33,7 @@ export const Home = () => {
     const [ error, setError ] = useState<Error>({status:false, code:null});
     const [ isLoading, setIsLoading ] = useState(true);
     const [ isRefreshing, setIsRefreshing ] = useState(false);
+    const [ showImage, setShowImage ] = useState({visible:false, url:''});
     const counter = useRef(0);
 
     useEffect(() => {
@@ -124,6 +126,7 @@ export const Home = () => {
                                         <ImageItem 
                                             key={`${data.id} - ${index}`}
                                             image={image}
+                                            onPress={(url) => setShowImage({visible:true, url:url})}  
                                         />
                                     );
                                 })}
@@ -133,6 +136,11 @@ export const Home = () => {
                     stickyHeaderIndices={[1]}
                 />
             </Container>
+            <ShowFullImage 
+                visible={showImage.visible}
+                url={showImage.url} 
+                close={() => setShowImage({visible:false, url:''})}
+            />
             <Alert 
                 visible={alert.visible}
                 title={alert.title} 

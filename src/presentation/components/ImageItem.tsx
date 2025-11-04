@@ -1,20 +1,21 @@
-import { Image, StyleSheet, View } from 'react-native'
+import { Image, Pressable, StyleSheet, View } from 'react-native'
 import type { Image as ImageEntity } from '../../domain/entities/imageEntity';
 import { getWidthPercentage } from '../helpers/calcPercentage';
 import { isTablet } from '../helpers/isTablet';
 
 interface Props {
     image: ImageEntity;
+    onPress: (url:string) => void;
 }
 
-export const ImageItem = ({image}:Props) => {
+export const ImageItem = ({image, onPress}:Props) => {
     return (
-        <View style={styles.container}>
+        <Pressable onPress={() => onPress(image.url)} style={styles.container}>
             <Image 
                 style={styles.image}
                 source={{uri:`${image.url}`}}
             />
-        </View> 
+        </Pressable> 
     );
 }
 
