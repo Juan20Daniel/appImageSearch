@@ -59,7 +59,7 @@ const styles = StyleSheet.create({
     boxInputSearch: {
         width: '100%',
         height: calcResolution({low:40, medium:50}),
-        borderRadius: 20,
+        borderRadius: 25,
         padding: 3,
     }, 
     fontInput: {

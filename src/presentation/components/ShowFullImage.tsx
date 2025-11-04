@@ -1,7 +1,7 @@
 import Ionicons from "@react-native-vector-icons/ionicons";
 import { Image, Modal, Pressable, StyleSheet, Text, ToastAndroid, useWindowDimensions, View } from "react-native";
 import { ensureStoragePermission } from "../helpers/checkPremissions";
-import ReactNativeBlobUtil from "react-native-blob-util";
+// import ReactNativeBlobUtil from "react-native-blob-util";
 import { useState } from "react";
 
 interface Props {
@@ -19,47 +19,47 @@ export const ShowFullImage = ({url, visible, close}:Props) => {
         const checkPermissions = await ensureStoragePermission();
         if(!checkPermissions) return;
 
-        let PictureDir = ReactNativeBlobUtil.fs.dirs.DownloadDir;
-        console.log(PictureDir);
-        const filePath = `${PictureDir}/download_image_${Date.now()}.jpg`; 
-        console.log(filePath)
-        ReactNativeBlobUtil.config({
-            appendExt: "jpg",
-            fileCache: true,
-            addAndroidDownloads: {
-                useDownloadManager: true,
-                notification: true,
-                path: filePath,
-                description: 'Downloading image',
-                mime:"image/jpg",
-                mediaScannable: true
-            }
-        }).fetch('GET', url).progress({interval:100}, (received, total) => {
-            let percentage = Math.floor((received / total)*100);
-            setDownloadProgress(percentage);
-        }).then((res) => {
-            ToastAndroid.show("Imagen descargada success", ToastAndroid.SHORT);
-        }).catch(error => {
-            console.log("error", error)
-        })
+        // let PictureDir = ReactNativeBlobUtil.fs.dirs.DownloadDir;
+        // console.log(PictureDir);
+        // const filePath = `${PictureDir}/download_image_${Date.now()}.jpg`; 
+        // console.log(filePath)
+        // ReactNativeBlobUtil.config({
+        //     appendExt: "jpg",
+        //     fileCache: true,
+        //     addAndroidDownloads: {
+        //         useDownloadManager: true,
+        //         notification: true,
+        //         path: filePath,
+        //         description: 'Downloading image',
+        //         mime:"image/jpg",
+        //         mediaScannable: true
+        //     }
+        // }).fetch('GET', url).progress({interval:100}, (received, total) => {
+        //     let percentage = Math.floor((received / total)*100);
+        //     setDownloadProgress(percentage);
+        // }).then((res) => {
+        //     ToastAndroid.show("Imagen descargada success", ToastAndroid.SHORT);
+        // }).catch(error => {
+        //     console.log("error", error)
+        // })
     }
 
-    const copyMediaToStorage = async (filePath:string, fileName:string) => {
-        try {
-            await ReactNativeBlobUtil.MediaCollection.copyToMediaStore(
-                {
-                    name: fileName,
-                    parentFolder: "searchimages",
-                    mimeType: "image/jpg"
-                },
-                'Download',
-                filePath
-            )
-            console.log()
-        } catch (error) {
+    // const copyMediaToStorage = async (filePath:string, fileName:string) => {
+    //     try {
+    //         await ReactNativeBlobUtil.MediaCollection.copyToMediaStore(
+    //             {
+    //                 name: fileName,
+    //                 parentFolder: "searchimages",
+    //                 mimeType: "image/jpg"
+    //             },
+    //             'Download',
+    //             filePath
+    //         )
+    //         console.log()
+    //     } catch (error) {
             
-        }
-    }
+    //     }
+    // }
     return (
         <Modal visible={visible} transparent animationType='fade'>  
             <Pressable style={styles.container} onPress={() => close()}>

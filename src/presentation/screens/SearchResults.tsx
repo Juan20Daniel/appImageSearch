@@ -17,6 +17,7 @@ import { ErrorNetwork } from '../components/ErrorNetwork';
 import { handleError } from '../helpers/handleError';
 import { Alert } from '../components/Alert';
 import { ErrorIlustration } from '../components/ErrorIlustration';
+import { ShowFullImage } from '../components/ShowFullImage';
 
 interface Props extends StackScreenProps<RootStackParamList, 'SearchResults'>{}
 
@@ -26,6 +27,7 @@ export const SearchResults = ({route, navigation}:Props) => {
     const [ error, setError ] = useState<Error>({ status:false, code:null });
     const [ isRefreshing, setIsRefreshing ] = useState(false);
     const [ alert, setAlert ] = useState({visible:false, title:'', message:''});
+    const [ showImage, setShowImage ] = useState({visible:false, url:''});
     const { valueToSearch } = route.params;
     const counter = useRef<number>(0);
     useLayoutEffect(() => {
@@ -95,7 +97,10 @@ export const SearchResults = ({route, navigation}:Props) => {
                                     :   <ErrorIlustration errorCode={error.code!}  />
                     }
                     renderItem={({item}) => (
-                        <ImageItem image={item} />            
+                        <ImageItem 
+                            image={item} 
+                            onPress={() => setShowImage({visible:true, url:item.url})}
+                        />            
                     )}
                     onEndReached={() => {
                         if(isLoading) return;
@@ -105,6 +110,11 @@ export const SearchResults = ({route, navigation}:Props) => {
                     onEndReachedThreshold={0.2}
                 />
             </Container>
+            <ShowFullImage 
+                visible={showImage.visible}
+                url={showImage.url} 
+                close={() => setShowImage({visible:false, url:''})}
+            />
             <Alert
                 visible={alert.visible}
                 title={alert.title} 
