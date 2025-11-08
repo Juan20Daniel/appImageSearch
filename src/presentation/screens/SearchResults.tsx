@@ -15,7 +15,7 @@ import { ListImageSkeletor } from '../components/ListImageSkeletor';
 import { ImagesNotFound } from '../components/ImagesNotFound';
 import { ErrorNetwork } from '../components/ErrorNetwork';
 import { handleError } from '../helpers/handleError';
-import { Alert } from '../components/Alert';
+import { AlertModal } from '../components/AlertModal';
 import { ErrorIlustration } from '../components/ErrorIlustration';
 import { ShowFullImage } from '../components/ShowFullImage';
 
@@ -27,7 +27,7 @@ export const SearchResults = ({route, navigation}:Props) => {
     const [ error, setError ] = useState<Error>({ status:false, code:null });
     const [ isRefreshing, setIsRefreshing ] = useState(false);
     const [ alert, setAlert ] = useState({visible:false, title:'', message:''});
-    const [ showImage, setShowImage ] = useState({visible:false, url:''});
+    const [ showImage, setShowImage ] = useState({visible:false, url_small:'', url_full:''});
     const { valueToSearch } = route.params;
     const counter = useRef<number>(0);
     useLayoutEffect(() => {
@@ -35,6 +35,7 @@ export const SearchResults = ({route, navigation}:Props) => {
     },[valueToSearch]);
     const searchImages = async () => {
         try {
+            setIsLoading(true);
             counter.current = counter.current+1;
             const images = await searchImageUseCase(valueToSearch, counter.current);
             setImages(preState => ([...preState, ...images]));
@@ -99,7 +100,7 @@ export const SearchResults = ({route, navigation}:Props) => {
                     renderItem={({item}) => (
                         <ImageItem 
                             image={item} 
-                            onPress={() => setShowImage({visible:true, url:item.url})}
+                            onPress={(url_small, url_full) => setShowImage({visible:true, url_small:url_small, url_full:url_full})}
                         />            
                     )}
                     onEndReached={() => {
@@ -112,10 +113,11 @@ export const SearchResults = ({route, navigation}:Props) => {
             </Container>
             <ShowFullImage 
                 visible={showImage.visible}
-                url={showImage.url} 
-                close={() => setShowImage({visible:false, url:''})}
+                url_small={showImage.url_small} 
+                url_full={showImage.url_full} 
+                close={() => setShowImage({visible:false, url_small:'', url_full:''})}
             />
-            <Alert
+            <AlertModal
                 visible={alert.visible}
                 title={alert.title} 
                 message={alert.message}

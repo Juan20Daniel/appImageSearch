@@ -13,8 +13,6 @@ const widthPx = Math.round(width * pixelRatio);
 const heightPx = Math.round(height * pixelRatio);
 
 export const calcResolution = ({low, medium, high}:Params):DimensionValue => {
-    // console.log({width:width})
-    // console.log({widthPx, heightPx})
     if(!medium && !high) return low;
     const totalResolution = widthPx + heightPx;
     if(totalResolution <= 2420) return low;

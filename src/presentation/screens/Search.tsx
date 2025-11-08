@@ -57,7 +57,7 @@ export const Search = () => {
         }
     },[]);
     const search = () => {
-        if(valueToSearch.length <= 3) return;
+        if(valueToSearch === '') return;
         const newSearch:History = { value:valueToSearch }
         saveHistoryLocalStorageUseCase([newSearch, ...history]);
         setValueToSearch('');
@@ -95,6 +95,7 @@ export const Search = () => {
             }
             <BtnFloat
                 action={() => search()}
+                disabled={valueToSearch === ''}
                 bottom={100}
             />
         </View>

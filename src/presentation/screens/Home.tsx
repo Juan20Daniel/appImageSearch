@@ -9,7 +9,7 @@ import { HomeTitle } from "../components/HomeTitle";
 import { ImageItem } from "../components/ImageItem";
 import { getWidthPercentage } from "../helpers/calcPercentage";
 import { ListImageSkeletor } from "../components/ListImageSkeletor";
-import { Alert } from "../components/Alert";
+import { AlertModal } from "../components/AlertModal";
 import { handleError } from "../helpers/handleError";
 import { Error } from "../types/Error";
 import { ErrorIlustration } from "../components/ErrorIlustration";
@@ -33,7 +33,7 @@ export const Home = () => {
     const [ error, setError ] = useState<Error>({status:false, code:null});
     const [ isLoading, setIsLoading ] = useState(true);
     const [ isRefreshing, setIsRefreshing ] = useState(false);
-    const [ showImage, setShowImage ] = useState({visible:false, url:''});
+    const [ showImage, setShowImage ] = useState({visible:false, url_small:'', url_full:''});
     const counter = useRef(0);
 
     useEffect(() => {
@@ -126,7 +126,7 @@ export const Home = () => {
                                         <ImageItem 
                                             key={`${data.id} - ${index}`}
                                             image={image}
-                                            onPress={(url) => setShowImage({visible:true, url:url})}  
+                                            onPress={(url_small,  url_full) => setShowImage({visible:true, url_small:url_small, url_full:url_full})}  
                                         />
                                     );
                                 })}
@@ -138,10 +138,11 @@ export const Home = () => {
             </Container>
             <ShowFullImage 
                 visible={showImage.visible}
-                url={showImage.url} 
-                close={() => setShowImage({visible:false, url:''})}
+                url_small={showImage.url_small}
+                url_full={showImage.url_full}
+                close={() => setShowImage({visible:false, url_small:'', url_full:''})}
             />
-            <Alert 
+            <AlertModal 
                 visible={alert.visible}
                 title={alert.title} 
                 message={alert.message}

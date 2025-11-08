@@ -1,7 +1,7 @@
 import { PermissionsAndroid, Platform } from "react-native";
 export const ensureStoragePermission = async () => {
   try {
-    if(Platform.OS === "android" && Platform.Version >= 33) {
+    if(Platform.OS !== "android" || Platform.Version >= 33) {
       return true;    
     }
 

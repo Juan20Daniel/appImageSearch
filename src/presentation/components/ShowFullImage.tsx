@@ -1,125 +1,128 @@
-import Ionicons from "@react-native-vector-icons/ionicons";
-import { Image, Modal, Pressable, StyleSheet, Text, ToastAndroid, useWindowDimensions, View } from "react-native";
+import { useEffect, useRef, useState } from "react";
+import { Image, Modal, Platform, Pressable, StyleSheet, useWindowDimensions, View } from "react-native";
 import { ensureStoragePermission } from "../helpers/checkPremissions";
-// import ReactNativeBlobUtil from "react-native-blob-util";
-import { useState } from "react";
+import ReactNativeBlobUtil from "react-native-blob-util";
+import { CameraRoll } from "@react-native-camera-roll/camera-roll";
+import { BtnDownload } from "./BtnDownload";
+import { AlertTop } from "./AlertTop";
+import Ionicons from "@react-native-vector-icons/ionicons";
+import { useAnimation } from "../hooks/useAnimation";
+import { calcResolution } from "../helpers/calcResolutionDevice";
 
 interface Props {
-    url: string;
+    url_small: string;
+    url_full: string;
     visible:boolean;
     close: () => void;
 }
-// https://www.youtube.com/watch?v=Ivtc7xPd_Uw
-export const ShowFullImage = ({url, visible, close}:Props) => {
-    const [ isDownloading, setIsDownloading ] = useState(false);
-    const [ downloadProgress, setDownloadProgress ] = useState(0)
+export const ShowFullImage = ({url_small, url_full, visible, close}:Props) => {
+    const [downloadProgress, setDownloadProgress] = useState(0);
+    const { fadeOpatity, fadeIn, fadeOut } = useAnimation();
     const width = useWindowDimensions().width;
-
+    const timeoutRef = useRef<number>(null);
+    useEffect(() => {
+        return () => {
+            if(timeoutRef.current) {
+                clearTimeout(timeoutRef.current);
+            }
+        }
+    },[]); 
+    const activeAlertTop = () => {
+        fadeIn({duration:300, toValue: 1, callback: () => {
+            timeoutRef.current = setTimeout(() => {
+                fadeOut({});
+            }, 5000);
+        }})
+    };
     const download = async () => {
         const checkPermissions = await ensureStoragePermission();
         if(!checkPermissions) return;
 
-        // let PictureDir = ReactNativeBlobUtil.fs.dirs.DownloadDir;
-        // console.log(PictureDir);
-        // const filePath = `${PictureDir}/download_image_${Date.now()}.jpg`; 
-        // console.log(filePath)
-        // ReactNativeBlobUtil.config({
-        //     appendExt: "jpg",
-        //     fileCache: true,
-        //     addAndroidDownloads: {
-        //         useDownloadManager: true,
-        //         notification: true,
-        //         path: filePath,
-        //         description: 'Downloading image',
-        //         mime:"image/jpg",
-        //         mediaScannable: true
-        //     }
-        // }).fetch('GET', url).progress({interval:100}, (received, total) => {
-        //     let percentage = Math.floor((received / total)*100);
-        //     setDownloadProgress(percentage);
-        // }).then((res) => {
-        //     ToastAndroid.show("Imagen descargada success", ToastAndroid.SHORT);
-        // }).catch(error => {
-        //     console.log("error", error)
-        // })
+        let PictureDir = ReactNativeBlobUtil.fs.dirs.PictureDir;
+        const fileName = `download_image_${Date.now()}.jpg`;
+        const filePath = 
+            Platform.OS === 'android' 
+                ?   `${PictureDir}/${fileName}`
+                :   `${ReactNativeBlobUtil.fs.dirs.DocumentDir}/${fileName}`; 
+        console.log("filePath", filePath);
+        ReactNativeBlobUtil.config({
+            appendExt: "jpg",
+            fileCache: true,
+            path: filePath,
+        })
+        .fetch('GET', url_full)
+        .progress({interval:300}, (received, total) => {
+            const progress = Math.floor((received / total)*100);
+            const progressPx = (progress / 100) * 200;
+            setDownloadProgress(progressPx);
+        })
+        .then((res) => {
+            copyMediaToStorage(res.path());
+        })
+        .catch(error => {
+            console.log("error", error)
+        });
     }
 
-    // const copyMediaToStorage = async (filePath:string, fileName:string) => {
-    //     try {
-    //         await ReactNativeBlobUtil.MediaCollection.copyToMediaStore(
-    //             {
-    //                 name: fileName,
-    //                 parentFolder: "searchimages",
-    //                 mimeType: "image/jpg"
-    //             },
-    //             'Download',
-    //             filePath
-    //         )
-    //         console.log()
-    //     } catch (error) {
-            
-    //     }
-    // }
+    const copyMediaToStorage = async (localPath:string) => {
+        try {
+            await CameraRoll.saveAsset(localPath);
+            setDownloadProgress(0);
+            activeAlertTop();
+            if (Platform.OS === 'ios') await ReactNativeBlobUtil.fs.unlink(localPath);
+        } catch (error) {
+            console.log('Error al guardar en la galería:', error);
+        }
+    }
     return (
         <Modal visible={visible} transparent animationType='fade'>  
-            <Pressable style={styles.container} onPress={() => close()}>
-                <Pressable style={styles.boxImage}>
+                <View style={styles.container}>
+                <Pressable 
+                    style={({pressed}) => [
+                        styles.btnClose,
+                        {opacity: pressed ? 0.6 : 1}
+                    ]} 
+                    onPress={close}
+                >
+                    <Ionicons name="close" size={Number(calcResolution({low:20, medium:30}))} color="#fff"/>
+                </Pressable>
+                {url_small !== '' &&
                     <Image 
-                        source={{uri:url}}
+                        source={{uri:url_small}}
                         style={{...styles.image, width:width, height:width}}
                     />
-                    <View style={styles.boxBtnDownload}>
-                        <Pressable
-                            onPress={() => download()}
-                            style={({pressed}) => [
-                                styles.btnDownload,
-                                {backgroundColor:pressed ? '#cfcfcfff' : '#fff',}
-                            ]}
-                        >
-                            <Text>Descargar</Text>
-                            <Ionicons name="download-outline" size={20} />
-                        </Pressable>
-                    </View>
-                </Pressable>
-            </Pressable>
+                }
+                <BtnDownload download={download} downloadProgress={downloadProgress} />
+                <AlertTop 
+                    message="Imagen descargada"
+                    opacity={fadeOpatity}
+                    onClose={() => {
+                        timeoutRef.current && clearTimeout(timeoutRef.current);
+                        fadeOut({});
+                    }}
+                />
+            </View>
         </Modal>
     );
 }
 
 const styles = StyleSheet.create({
     container: {
+        position: 'relative',
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
-        backgroundColor: 'rgba(0,0,0,0.9)'
-    },
-    boxImage: {
-        position: 'relative',
+        backgroundColor: '#000',
     },
     image: {
         objectFit: 'contain',
     },
-    boxBtnDownload: {
+    btnClose: {
         position: 'absolute',
-        width: '100%',
-        alignItems: 'center',
-        bottom: 20,
-    },
-    btnDownload: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        gap: 20,
-        paddingVertical: 10,
-        paddingHorizontal: 20,
-        borderRadius: 20,
-
-        shadowColor:"#757575",
-        shadowOffset: {
-        width: 0,
-        height: 0,
-        },
-        shadowOpacity: 1,
-        shadowRadius: 7,
-        elevation: 6
+        top: 72,
+        right: 10,
+        padding:7,
+        borderRadius: '50%',
+        zIndex: 5,
     }
 })

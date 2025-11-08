@@ -18,6 +18,10 @@
 	<string>$(PRODUCT_NAME)</string>
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
+	<key>NSPhotoLibraryAddUsageDescription</key>
+	<string>Esta app necesita permiso para guardar imágenes en tu galería.</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>Esta app necesita permiso para guardar imágenes en tu galería.</string>
 	<key>CFBundleShortVersionString</key>
 	<string>$(MARKETING_VERSION)</string>
 	<key>CFBundleSignature</key>

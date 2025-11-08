@@ -5,14 +5,18 @@ import { isTablet } from '../helpers/isTablet';
 
 interface Props {
     bottom?: DimensionValue;
+    disabled?: boolean;
     action: () => void;
 }
 
-export const BtnFloat = ({bottom, action}:Props) => {
+export const BtnFloat = ({bottom, disabled=true,  action}:Props) => {
     return (
         <TouchableOpacity 
-            style={{...styles.container, bottom:bottom??0}} 
-            onPress={() => action()}
+            style={{...styles.container, bottom:bottom??0, backgroundColor: disabled ? '#dadadaff' : '#1A66AC'}} 
+            onPress={() => {
+                if(disabled) return;
+                action();
+            }}
         >
             <Ionicons 
                 name='search-outline'

@@ -9,7 +9,7 @@ interface Props {
     closeModal: () => void;
 }
 
-export const Alert = ({visible, title, message, closeModal}:Props) => {
+export const AlertModal = ({visible, title, message, closeModal}:Props) => {
     return (
         <Modal visible={visible} transparent>
             <View style={styles.container}>
@@ -17,7 +17,7 @@ export const Alert = ({visible, title, message, closeModal}:Props) => {
                     <Text style={styles.title}>{title}</Text>
                     <Text style={styles.message}>{message}</Text>
                     <View style={styles.boxBtn}>
-                        <Pressable 
+                        <Pressable
                             onPress={() => closeModal()} 
                             style={({pressed}) => [
                                 styles.btn,

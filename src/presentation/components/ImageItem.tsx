@@ -5,15 +5,15 @@ import { isTablet } from '../helpers/isTablet';
 
 interface Props {
     image: ImageEntity;
-    onPress: (url:string) => void;
+    onPress: (url_small:string, url_full:string) => void;
 }
 
 export const ImageItem = ({image, onPress}:Props) => {
     return (
-        <Pressable onPress={() => onPress(image.url)} style={styles.container}>
+        <Pressable onPress={() => onPress(image.url_small, image.url_full)} style={styles.container}>
             <Image 
                 style={styles.image}
-                source={{uri:`${image.url}`}}
+                source={{uri:`${image.url_small}`}}
             />
         </Pressable> 
     );

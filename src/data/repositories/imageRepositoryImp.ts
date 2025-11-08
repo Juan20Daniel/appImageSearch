@@ -34,6 +34,7 @@ export class ImageRepositoryImplement implements ImageRepository {
                 return ImageMapper.fromUnsplashAPIResponseToImageEntity(imageItem);
             });
         } catch (error) {
+            console.log(error); 
             throw error;
         }
     }

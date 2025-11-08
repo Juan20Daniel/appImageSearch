@@ -1,4 +1,4 @@
-import { StyleSheet, TextInput, View } from 'react-native';
+import { StyleSheet, Text, TextInput, View } from 'react-native';
 import { getHeightPercentage, getWidthPercentage } from '../helpers/calcPercentage';
 import { isTablet } from '../helpers/isTablet';
 import { calcResolution } from '../helpers/calcResolutionDevice';
@@ -85,6 +85,7 @@ const styles = StyleSheet.create({
         zIndex: 2,
         
     },
+
     boxIconSearch: {
         position: 'absolute',
         right: 10,
