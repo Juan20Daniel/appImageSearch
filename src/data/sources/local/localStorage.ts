@@ -9,10 +9,10 @@ export const LocalStorage = (key:string) => {
             throw error;
         }
     }
-    const get = async <T,>(): Promise<T> => {
+    const get = async <T,>(): Promise<T|null> => {
         try {
             const data = await AsyncStorage.getItem(key);
-            if(!data) return [] as never;
+            if(!data) return null;
             return JSON.parse(data);
         } catch (error) {
             console.log(error);

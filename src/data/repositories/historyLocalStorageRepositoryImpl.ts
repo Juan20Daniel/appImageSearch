@@ -11,7 +11,8 @@ export class HostoryLocalStorageRepositoryImpl implements historyLocalRespositor
     }
     async getLocalStorage(): Promise<History[]> {
         try {
-            return await LocalStorage('history').get();
+            const result = await LocalStorage('history').get<History[]>();
+            return result??[]
         } catch (error) {
             throw error;
         }
@@ -22,6 +23,7 @@ export class HostoryLocalStorageRepositoryImpl implements historyLocalRespositor
     async removeItemLocalStorage(item:string) {
         try {
             const history =  await LocalStorage('history').get<History[]>();
+            if(!history) return [];
             const newHistory = history.filter(historyItem => historyItem.value !== item);
             await LocalStorage('history').save(newHistory);
             return newHistory;
