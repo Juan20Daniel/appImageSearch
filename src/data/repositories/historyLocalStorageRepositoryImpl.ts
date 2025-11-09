@@ -4,25 +4,27 @@ import { LocalStorage } from "../sources/local/localStorage";
 
 export class HostoryLocalStorageRepositoryImpl implements historyLocalRespository {
     saveLocalStorage(history: History[]): void {
-
         if(history.length > 20) {
             history = history.slice(0, 21);
         }
-        LocalStorage().save(history);
+        LocalStorage('history').save(history);
     }
     async getLocalStorage(): Promise<History[]> {
         try {
-            return await LocalStorage().get();
+            return await LocalStorage('history').get();
         } catch (error) {
             throw error;
         }
     }
     clearHistoryLocalStorage(): void {
-        LocalStorage().clear();
+        LocalStorage('history').clear();
     }
-    async removeItemLocalStorage(item:string): Promise<History[]> {
+    async removeItemLocalStorage(item:string) {
         try {
-            return await LocalStorage().removeItem(item);
+            const history =  await LocalStorage('history').get<History[]>();
+            const newHistory = history.filter(historyItem => historyItem.value !== item);
+            await LocalStorage('history').save(newHistory);
+            return newHistory;
         } catch (error) {
             throw error;
         }

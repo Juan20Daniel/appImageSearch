@@ -1,22 +1,18 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { History } from "../../../domain/entities/historyEntity";
-const nameLocalStorage = 'history';
 
-//https://www.udemy.com/course/react-native-mvvm-app-delivery-nodejs-mysql-pasarelas-pagos/learn/lecture/34545840#overview
-
-export const LocalStorage = () => {
-    const save = async (history:History[]) => {
+export const LocalStorage = (key:string) => {
+    const save = async <T,>(valueToSave:T) => {
         try {
-            await AsyncStorage.setItem(nameLocalStorage, JSON.stringify(history));
+            await AsyncStorage.setItem(key, JSON.stringify(valueToSave));
         } catch (error) {
             console.log(error);
             throw error;
         }
     }
-    const get = async (): Promise<History[]> => {
+    const get = async <T,>(): Promise<T> => {
         try {
-            const data = await AsyncStorage.getItem(nameLocalStorage);
-            if(!data) return [];
+            const data = await AsyncStorage.getItem(key);
+            if(!data) return [] as never;
             return JSON.parse(data);
         } catch (error) {
             console.log(error);
@@ -25,18 +21,7 @@ export const LocalStorage = () => {
     }
     const clear = async () => {
         try {
-            await AsyncStorage.removeItem(nameLocalStorage);
-        } catch (error) {
-            console.log(error);
-            throw error;
-        }
-    }
-    const removeItem = async (itemToRemove:string) => {
-        try {
-            const history = await get();
-            const newHistory = history.filter(item => item.value != itemToRemove);
-            save(newHistory);
-            return newHistory;
+            await AsyncStorage.removeItem(key);
         } catch (error) {
             console.log(error);
             throw error;
@@ -47,6 +32,5 @@ export const LocalStorage = () => {
         save,
         get,
         clear,
-        removeItem
     }
 }

@@ -17,6 +17,7 @@ interface Props {
 }
 export const ShowFullImage = ({url_small, url_full, visible, close}:Props) => {
     const [downloadProgress, setDownloadProgress] = useState(0);
+    const [downloadMessage, setDownloadMessage] = useState('');
     const { fadeOpatity, fadeIn, fadeOut } = useAnimation();
     const width = useWindowDimensions().width;
     const timeoutRef = useRef<number>(null);
@@ -31,7 +32,7 @@ export const ShowFullImage = ({url_small, url_full, visible, close}:Props) => {
         fadeIn({duration:300, toValue: 1, callback: () => {
             timeoutRef.current = setTimeout(() => {
                 fadeOut({});
-            }, 5000);
+            }, 55000);
         }})
     };
     const download = async () => {
@@ -40,11 +41,10 @@ export const ShowFullImage = ({url_small, url_full, visible, close}:Props) => {
 
         let PictureDir = ReactNativeBlobUtil.fs.dirs.PictureDir;
         const fileName = `download_image_${Date.now()}.jpg`;
-        const filePath = 
-            Platform.OS === 'android' 
+        const filePath =
+            Platform.OS === 'android'
                 ?   `${PictureDir}/${fileName}`
-                :   `${ReactNativeBlobUtil.fs.dirs.DocumentDir}/${fileName}`; 
-        console.log("filePath", filePath);
+                :   `${ReactNativeBlobUtil.fs.dirs.DocumentDir}/${fileName}`;
         ReactNativeBlobUtil.config({
             appendExt: "jpg",
             fileCache: true,
@@ -60,6 +60,7 @@ export const ShowFullImage = ({url_small, url_full, visible, close}:Props) => {
             copyMediaToStorage(res.path());
         })
         .catch(error => {
+            setDownloadMessage('Error al descargar la imagen');
             console.log("error", error)
         });
     }
@@ -70,7 +71,9 @@ export const ShowFullImage = ({url_small, url_full, visible, close}:Props) => {
             setDownloadProgress(0);
             activeAlertTop();
             if (Platform.OS === 'ios') await ReactNativeBlobUtil.fs.unlink(localPath);
+            setDownloadMessage('Imagen descargada');
         } catch (error) {
+            setDownloadMessage('Error al guardar en la galería');
             console.log('Error al guardar en la galería:', error);
         }
     }
@@ -82,7 +85,11 @@ export const ShowFullImage = ({url_small, url_full, visible, close}:Props) => {
                         styles.btnClose,
                         {opacity: pressed ? 0.6 : 1}
                     ]} 
-                    onPress={close}
+                    onPress={() => {
+                        timeoutRef.current && clearTimeout(timeoutRef.current);
+                        fadeOut({duration:0, toValue:0});
+                        close();
+                    }}
                 >
                     <Ionicons name="close" size={Number(calcResolution({low:20, medium:30}))} color="#fff"/>
                 </Pressable>
@@ -94,7 +101,7 @@ export const ShowFullImage = ({url_small, url_full, visible, close}:Props) => {
                 }
                 <BtnDownload download={download} downloadProgress={downloadProgress} />
                 <AlertTop 
-                    message="Imagen descargada"
+                    message={downloadMessage}
                     opacity={fadeOpatity}
                     onClose={() => {
                         timeoutRef.current && clearTimeout(timeoutRef.current);

@@ -3,12 +3,14 @@ import axios from "axios";
 export enum ErrorCodes {
     ERR_NETWORK = "ERR_NETWORK",
     ERR_BAD_REQUEST = "ERR_BAD_REQUEST",
+    ERR_LIMIT_EXCEEDED = "ERR_LIMIT_EXCEEDED",
     UNKNOWN_ERROR = "UNKNOWN_ERROR",
 }
 
 const errors: Record<ErrorCodes, string> = {
     [ErrorCodes.ERR_NETWORK]: "No hay conexión de internet, conecta el dispositivo a una red",
     [ErrorCodes.ERR_BAD_REQUEST]: "Hubo un problema al obtener las imagenes, intentalo mas tarde.",
+    [ErrorCodes.ERR_LIMIT_EXCEEDED]: "Límite de peticiones excedido. Intenta más tarde.",
     [ErrorCodes.UNKNOWN_ERROR]: "Error desconocido de petición HTTP"
 }
 
@@ -28,11 +30,13 @@ class AppError extends Error {
     }
 }
 
-export const handleError = (error: unknown): AppError => {
+export const handleError = (error: any): AppError => {
     if(axios.isAxiosError(error)) {
-        console.log(error.code);
         const code = error.code ?? ErrorCodes.UNKNOWN_ERROR;
         return new AppError(error.code, errorMessage(code), error);
+    }
+    if(error.code) {
+        return new AppError(error.code, errorMessage(error.code), error);
     }
     return new AppError(ErrorCodes.UNKNOWN_ERROR, 'Error desconocido', error);
 }

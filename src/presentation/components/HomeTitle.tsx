@@ -8,7 +8,7 @@ export const HomeTitle = () => {
             <Text style={styles.title}>
                 Image APP
             </Text>
-            <Text style={styles.textInfo}>Explora imágenes premium relacionadas en iStock | Ahorra un 20 % con el código UNSPLASH20</Text>
+            <Text style={styles.textInfo}>Explora y descarga gran variedad de imágenes gratuitas de unsplash.</Text>
         </View>
     );
 }
