@@ -1,4 +1,4 @@
-package com.imagesearch
+package com.juandanielmoralesa.rnimagesearch
 
 import android.app.Application
 import com.facebook.react.PackageList
