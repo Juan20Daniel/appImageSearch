@@ -10,7 +10,7 @@ export enum ErrorCodes {
 const errors: Record<ErrorCodes, string> = {
     [ErrorCodes.ERR_NETWORK]: "No hay conexión de internet, conecta el dispositivo a una red",
     [ErrorCodes.ERR_BAD_REQUEST]: "Hubo un problema al obtener las imagenes, intentalo mas tarde.",
-    [ErrorCodes.ERR_LIMIT_EXCEEDED]: "Límite de peticiones excedido. Intenta más tarde.",
+    [ErrorCodes.ERR_LIMIT_EXCEEDED]: "Límite de busquedas excedido. Espere 1 hora para continuar buscando.",
     [ErrorCodes.UNKNOWN_ERROR]: "Error desconocido de petición HTTP"
 }
 

@@ -12,7 +12,7 @@ import { ListImageSkeletor } from "../components/ListImageSkeletor";
 import { AlertModal } from "../components/AlertModal";
 import { handleError } from "../helpers/handleError";
 import { Error } from "../types/Error";
-import { ErrorIlustration } from "../components/ErrorIlustration";
+import { ErrorIlustration } from "../components/StatusError";
 import { Empty } from "../components/Empty";
 import { ShowFullImage } from "../components/ShowFullImage";
 

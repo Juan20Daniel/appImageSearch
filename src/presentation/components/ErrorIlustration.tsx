@@ -1,12 +1,33 @@
-import { ErrorNetwork } from "./ErrorNetwork";
+import { Image, ImageSourcePropType, StyleSheet, View } from 'react-native'
+import { isTablet } from '../helpers/isTablet';
 
 interface Props {
-    errorCode: string;
+    image: ImageSourcePropType;
 }
 
-export const ErrorIlustration = ({errorCode}:Props) => {
-    if(errorCode === "ERR_NETWORK") return <ErrorNetwork />;
-    if(errorCode === "ERR_BAD_REQUEST") return <ErrorNetwork />;
-    if(errorCode === "UNKNOWN_ERROR") return <ErrorNetwork />;
-    return <ErrorNetwork />;
+export const ErrorIlustration = ({image}:Props) => {
+    return (
+        <View style={styles.container}>
+            <Image 
+                source={image}
+                style={styles.image}
+            />
+        </View>
+    );
 }
+
+const styles = StyleSheet.create({
+    container: {
+        width: '100%',
+        height: isTablet ? 300 : 200,
+        justifyContent: 'center',
+        alignItems: 'center',
+        paddingBottom: 30,
+        paddingHorizontal: 20,
+    },
+    image: {
+        maxWidth: isTablet ? 450 : 250,
+        maxHeight: isTablet ? 200 : 150,
+        objectFit: 'contain', 
+    }
+});

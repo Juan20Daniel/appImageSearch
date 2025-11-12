@@ -13,10 +13,9 @@ import { calcResolution } from '../helpers/calcResolutionDevice';
 import { ImageItem } from '../components/ImageItem';
 import { ListImageSkeletor } from '../components/ListImageSkeletor';
 import { ImagesNotFound } from '../components/ImagesNotFound';
-import { ErrorNetwork } from '../components/ErrorNetwork';
 import { handleError } from '../helpers/handleError';
 import { AlertModal } from '../components/AlertModal';
-import { ErrorIlustration } from '../components/ErrorIlustration';
+import { StatusError } from '../components/StatusError';
 import { ShowFullImage } from '../components/ShowFullImage';
 
 interface Props extends StackScreenProps<RootStackParamList, 'SearchResults'>{}
@@ -25,10 +24,12 @@ export const SearchResults = ({route, navigation}:Props) => {
     const [ images, setImages ] = useState<Image[]>([]);
     const [ isLoading, setIsLoading ] = useState(true);
     const [ error, setError ] = useState<Error>({ status:false, code:null });
+    
     const [ isRefreshing, setIsRefreshing ] = useState(false);
     const [ alert, setAlert ] = useState({visible:false, title:'', message:''});
     const [ showImage, setShowImage ] = useState({visible:false, url_small:'', url_full:''});
     const { valueToSearch } = route.params;
+    const totalImages = useRef<number>(0);
     const counter = useRef<number>(0);
     useLayoutEffect(() => {
         searchImages();
@@ -37,8 +38,10 @@ export const SearchResults = ({route, navigation}:Props) => {
         try {
             setIsLoading(true);
             counter.current = counter.current+1;
-            const images = await searchImageUseCase(valueToSearch, counter.current);
-            setImages(preState => ([...preState, ...images]));
+            const result = await searchImageUseCase(valueToSearch, counter.current);
+            console.log('Total de imagenes encontradas: ', result.total);
+            totalImages.current = result.total;
+            setImages(preState => ([...preState, ...result.images]));
             setError({status:false, code:null});
         } catch (error) {
             const err = handleError(error);
@@ -48,7 +51,7 @@ export const SearchResults = ({route, navigation}:Props) => {
                 title:'Error al cargar las imagenes', 
                 message:err.message
             });
-            setError({status:true, code:null});
+            setError({status:true, code:err.errorCode});
         } finally {
             setIsLoading(false);
             setIsRefreshing(false);
@@ -94,8 +97,8 @@ export const SearchResults = ({route, navigation}:Props) => {
                         isLoading
                             ?   <ListImageSkeletor /> 
                             :   !error.status
-                                    ?   <View />
-                                    :   <ErrorIlustration errorCode={error.code!}  />
+                                    ?   <View style={{width:200, height: 100}} />
+                                    :   <StatusError errorCode={error.code!}  />
                     }
                     renderItem={({item}) => (
                         <ImageItem 
@@ -106,6 +109,7 @@ export const SearchResults = ({route, navigation}:Props) => {
                     onEndReached={() => {
                         if(isLoading) return;
                         if(error.status) return;
+                        if(images.length >= totalImages.current) return;
                         searchImages();
                     }}
                     onEndReachedThreshold={0.2}
