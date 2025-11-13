@@ -12,7 +12,7 @@ import { ListImageSkeletor } from "../components/ListImageSkeletor";
 import { AlertModal } from "../components/AlertModal";
 import { handleError } from "../helpers/handleError";
 import { Error } from "../types/Error";
-import { ErrorIlustration } from "../components/StatusError";
+import { StatusError } from "../components/StatusError";
 import { Empty } from "../components/Empty";
 import { ShowFullImage } from "../components/ShowFullImage";
 
@@ -109,7 +109,7 @@ export const Home = () => {
                         isLoading 
                             ?   <ListImageSkeletor />
                             :   error.status
-                                    ?   <ErrorIlustration errorCode={error.code!}  />
+                                    ?   <StatusError errorCode={error.code!}  />
                                     :   (homeData.length <= 3)
                                             ?   <Empty />
                                             :   <View />
